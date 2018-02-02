@@ -1,18 +1,20 @@
 
 package bestgymever.models;
 
+import java.time.*;
 import java.util.*;
+
 
 public class Workout {
     private final int id;
     private int avalibleSlots;
     private PersonalTrainer personalTrainer;
-    private java.sql.Date starDate, endDate;
+    LocalDateTime starDate, endDate;
     private WorkoutRoom workoutRoom;
     private WorkoutType workoutType;
     private final Map<Integer, Booking> bookings;
 
-    public Workout(int id, PersonalTrainer personalTrainer, int avalibleSlots, java.sql.Date starDate, java.sql.Date endDate, WorkoutRoom workoutRoom, WorkoutType workoutName) {
+    public Workout(int id, PersonalTrainer personalTrainer, int avalibleSlots, LocalDateTime starDate, LocalDateTime endDate, WorkoutRoom workoutRoom, WorkoutType workoutName) {
         bookings=new HashMap<>();
         this.id = id;
         this.personalTrainer=personalTrainer;
@@ -35,19 +37,19 @@ public class Workout {
         this.avalibleSlots = avalibleSlots;
     }
 
-    public java.sql.Date getStarDate() {
+    public LocalDateTime getStarDate() {
         return starDate;
     }
 
-    public void setStarDate(java.sql.Date starDate) {
+    public void setStarDate(LocalDateTime starDate) {
         this.starDate = starDate;
     }
 
-    public java.sql.Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(java.sql.Date endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
