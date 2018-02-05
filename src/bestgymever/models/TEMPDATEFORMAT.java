@@ -12,6 +12,10 @@ public class TEMPDATEFORMAT {
         System.out.println(dateFormat.format(date));
         
         Repository hej = new Repository();
-        hej.logIn();
+        SuperModel a = new SuperModel();
+        
+        hej.getMembers(a.getMembers(), "4");
+        System.out.println(a.getMembers().size());
+        
     }
 }
