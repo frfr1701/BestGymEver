@@ -1,6 +1,6 @@
 
 package bestgymever.controller;
 
-public class memberController {
+public class memberController  implements IController{
 
 }

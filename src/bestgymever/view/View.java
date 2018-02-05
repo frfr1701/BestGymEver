@@ -6,9 +6,9 @@ import bestgymever.models.*;
 
 public class View {
 
-     controller;
+    IController controller;
 
-    public View(Controller controller) {
+    public View(IController controller) {
         this.controller = controller;
     }
 
