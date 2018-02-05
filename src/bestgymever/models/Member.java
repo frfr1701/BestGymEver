@@ -1,9 +1,9 @@
-
 package bestgymever.models;
 
 import java.util.*;
 
-public class Member{
+public class Member {
+
     private final int id;
     private String name;
     private final Map<Integer, Booking> bookings;
@@ -34,21 +34,21 @@ public class Member{
 
     public void addBooking(Booking booking) {
         bookings.put(booking.getId(), booking);
-    }  
+    }
 
     public void removeBooking(Booking booking) {
         bookings.remove(booking.getId());
-    }  
-    
+    }
+
     public Map<Integer, Note> getNotes() {
         return notes;
     }
 
     public void addNote(Note note) {
         notes.put(note.getId(), note);
-    }  
+    }
 
     public void removeNote(Note note) {
         notes.remove(note.getId());
-    } 
+    }
 }

@@ -1,21 +1,23 @@
-
 package bestgymever.models;
 
 public class Note {
-    int id;
-    String note;
 
-    public Note(int id, String note) {
+    private final int id;
+    private String note;
+    private final Member member;
+
+    public Note(int id, String note, Member member) {
         this.id = id;
         this.note = note;
+        this.member = member;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Member getMember() {
+        return member;
     }
 
     public String getNote() {
