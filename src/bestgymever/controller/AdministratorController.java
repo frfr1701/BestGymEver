@@ -9,26 +9,25 @@ public class AdministratorController implements IController {
     SuperModel model;
     ConsoleView view;
     Repository repository;
-    
-    private int id;
 
     FunInt f1 = (m) -> repository.getMembers(m, "");
     FunInt f2 = (m) -> repository.mapNotesToMembers(m, "");
+    FunInt f3 = (m) -> repository.mapNotesToMembers(m, "");
+    FunInt f4 = (m) -> repository.mapNotesToMembers(m, "");
+    FunInt f5 = (m) -> repository.mapNotesToMembers(m, "");
+    FunInt f6 = (m) -> repository.mapNotesToMembers(m, "");
 
     public AdministratorController(SuperModel model, ConsoleView view, Repository repository) {
         this.model = model;
         this.view = view;
         this.repository = repository;
-        
-        this.id = -1;
     }
 
     @Override
     public void updateModel(String input) {
         model.getViewList().clear();
         
-        model.update(f1.andThen(f2));
-//        model.update(f1).update(f2);
+        model.update(f1.andThen(f2).andThen(f3).andThen(f4).andThen(f5).andThen(f6));
         
         model.getMembers().values().forEach((member) -> {
             model.getViewList().add(member.getName());
