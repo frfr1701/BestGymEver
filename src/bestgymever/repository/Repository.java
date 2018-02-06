@@ -3,13 +3,13 @@ package bestgymever.repository;
 import bestgymever.models.*;
 import java.sql.*;
 import static java.sql.ResultSet.*;
-import java.util.*;
 
 public class Repository {
 
     PropertiesReader pr;
     String query;
     ResultSet rs;
+    String returnStatement;
 
     public Repository() {
         this.pr = new PropertiesReader();
@@ -104,7 +104,7 @@ public class Repository {
         return -1;
     }
 
-    public void getMembers(Map<Integer, Member> members, String member) {
+    public SuperModel getMembers(SuperModel model, String member) {
         query = "SELECT * FROM BestGymEver.Member";
         oneOrAll(member);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -115,18 +115,19 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (!members.containsKey(rs.getInt("ID"))) {
-                    members.put(rs.getInt("ID"), new Member(rs.getInt("ID"), rs.getString("Name")));
+                if (!model.getMembers().containsKey(rs.getInt("ID"))) {
+                    model.getMembers().put(rs.getInt("ID"), new Member(rs.getInt("ID"), rs.getString("Name")));
                 } else {
-                    members.get(rs.getInt("ID")).setName(rs.getString("Name"));
+                    model.getMembers().get(rs.getInt("ID")).setName(rs.getString("Name"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void getPersonalTrainers(Map<Integer, PersonalTrainer> personalTrainers, String personalTrainer) {
+    public SuperModel getPersonalTrainers(SuperModel model, String personalTrainer) {
         query = "SELECT * FROM BestGymEver.PersonalTrainer";
         oneOrAll(personalTrainer);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -137,18 +138,19 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (!personalTrainers.containsKey(rs.getInt("ID"))) {
-                    personalTrainers.put(rs.getInt("ID"), new PersonalTrainer(rs.getInt("ID"), rs.getString("Name")));
+                if (!model.getPersonalTrainers().containsKey(rs.getInt("ID"))) {
+                    model.getPersonalTrainers().put(rs.getInt("ID"), new PersonalTrainer(rs.getInt("ID"), rs.getString("Name")));
                 } else {
-                    personalTrainers.get(rs.getInt("ID")).setName(rs.getString("Name"));
+                    model.getPersonalTrainers().get(rs.getInt("ID")).setName(rs.getString("Name"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void getWorkoutRooms(Map<Integer, WorkoutRoom> workoutRooms, String workoutRoom) {
+    public SuperModel getWorkoutRooms(SuperModel model, String workoutRoom) {
         query = "SELECT * FROM BestGymEver.WorkoutRoom";
         oneOrAll(workoutRoom);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -159,18 +161,19 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (!workoutRooms.containsKey(rs.getInt("ID"))) {
-                    workoutRooms.put(rs.getInt("ID"), new WorkoutRoom(rs.getInt("ID"), rs.getString("Name")));
+                if (!model.getWorkoutRooms().containsKey(rs.getInt("ID"))) {
+                    model.getWorkoutRooms().put(rs.getInt("ID"), new WorkoutRoom(rs.getInt("ID"), rs.getString("Name")));
                 } else {
-                    workoutRooms.get(rs.getInt("ID")).setName(rs.getString("Name"));
+                    model.getWorkoutRooms().get(rs.getInt("ID")).setName(rs.getString("Name"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void getWorkoutTypes(Map<Integer, WorkoutType> workoutTypes, String workoutType) {
+    public SuperModel getWorkoutTypes(SuperModel model, String workoutType) {
         query = "SELECT * FROM BestGymEver.WorkoutType";
         oneOrAll(workoutType);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -181,22 +184,19 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (!workoutTypes.containsKey(rs.getInt("ID"))) {
-                    workoutTypes.put(rs.getInt("ID"), new WorkoutType(rs.getInt("ID"), rs.getString("Name")));
+                if (!model.getWorkoutTypes().containsKey(rs.getInt("ID"))) {
+                    model.getWorkoutTypes().put(rs.getInt("ID"), new WorkoutType(rs.getInt("ID"), rs.getString("Name")));
                 } else {
-                    workoutTypes.get(rs.getInt("ID")).setName(rs.getString("Name"));
+                    model.getWorkoutTypes().get(rs.getInt("ID")).setName(rs.getString("Name"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void getWorkouts(Map<Integer, Workout> workouts,
-            Map<Integer, WorkoutType> workoutTypes,
-            Map<Integer, WorkoutRoom> workoutRooms,
-            Map<Integer, PersonalTrainer> personalTrainers,
-            String workout) {
+    public SuperModel getWorkouts(SuperModel model, String workout) {
         query = "SELECT * FROM BestGymEver.GetWorkouts";
         oneOrAll(workout);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -207,45 +207,46 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (!workouts.containsKey(rs.getInt("Workout_ID"))) {
-                    
-                    if (!workoutRooms.containsKey(rs.getInt("WorkoutRoom_ID"))) {
-                        workoutRooms.put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
+                if (!model.getWorkouts().containsKey(rs.getInt("Workout_ID"))) {
+
+                    if (!model.getWorkoutRooms().containsKey(rs.getInt("WorkoutRoom_ID"))) {
+                        model.getWorkoutRooms().put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
                     } else {
-                        workoutRooms.get(rs.getInt("WorkoutRoom_ID")).setName(rs.getString("WorkoutRoom_Name"));
+                        model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")).setName(rs.getString("WorkoutRoom_Name"));
                     }
-                    if (!workoutTypes.containsKey(rs.getInt("WorkoutType_ID"))) {
-                        workoutTypes.put(rs.getInt("WorkoutType_ID"), new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name")));
+                    if (!model.getWorkoutTypes().containsKey(rs.getInt("WorkoutType_ID"))) {
+                        model.getWorkoutTypes().put(rs.getInt("WorkoutType_ID"), new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name")));
                     } else {
-                        workoutTypes.get(rs.getInt("WorkoutType_ID")).setName(rs.getString("WorkoutType_Name"));
+                        model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).setName(rs.getString("WorkoutType_Name"));
                     }
-                    if (!personalTrainers.containsKey(rs.getInt("PersonalTrainer_ID"))) {
-                        personalTrainers.put(rs.getInt("PersonalTrainer_ID"), new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name")));
+                    if (!model.getPersonalTrainers().containsKey(rs.getInt("PersonalTrainer_ID"))) {
+                        model.getPersonalTrainers().put(rs.getInt("PersonalTrainer_ID"), new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name")));
                     } else {
-                        personalTrainers.get(rs.getInt("PersonalTrainer_ID")).setName(rs.getString("PersonalTrainer_Name"));
+                        model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).setName(rs.getString("PersonalTrainer_Name"));
                     }
-                    
-                    workouts.put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
-                            personalTrainers.get(rs.getInt("PersonalTrainer_ID")),
+
+                    model.getWorkouts().put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
+                            model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")),
                             rs.getInt("AvailableSlots"),
                             rs.getDate("StartDate"),
                             rs.getDate("EndDate"),
-                            workoutRooms.get(rs.getInt("WorkoutRoom_ID")),
-                            workoutTypes.get(rs.getInt("WorkoutType_ID"))));
-                    
-                    workoutRooms.get(rs.getInt("WorkoutRoom_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
-                    workoutTypes.get(rs.getInt("WorkoutType_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
-                    personalTrainers.get(rs.getInt("PersonalTrainer_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                            model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")),
+                            model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID"))));
+
+                    model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
+                    model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
+                    model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                 } else {
-                    workouts.get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                    model.getWorkouts().get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void mapNotesToMembers(Map<Integer, Note> notes, Map<Integer, Member> members, String member) {
+    public SuperModel mapNotesToMembers(SuperModel model, String member) {
         query = "SELECT * FROM Note";
         oneOrAllMemberID(member);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -256,28 +257,24 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (!notes.containsKey(rs.getInt("ID"))) {
-                    if (members.containsKey(rs.getInt("Member_ID"))) {
-                        Note note = new Note(rs.getInt("ID"), rs.getString("Note"), members.get(rs.getInt("Member_ID")));
+                if (!model.getNotes().containsKey(rs.getInt("ID"))) {
+                    if (model.getMembers().containsKey(rs.getInt("Member_ID"))) {
+                        Note note = new Note(rs.getInt("ID"), rs.getString("Note"), model.getMembers().get(rs.getInt("Member_ID")));
 
-                        notes.put(rs.getInt("ID"), note);
-                        members.get(rs.getInt("Member_ID")).addNote(note);
+                        model.getNotes().put(rs.getInt("ID"), note);
+                        model.getMembers().get(rs.getInt("Member_ID")).addNote(note);
                     }
                 } else {
-                    notes.get(rs.getInt("ID")).setNote(rs.getString("Note"));
+                    model.getNotes().get(rs.getInt("ID")).setNote(rs.getString("Note"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void mapWorkoutsToBookings(Map<Integer, Workout> workouts,
-            Map<Integer, Booking> bookings,
-            Map<Integer, WorkoutType> workoutTypes,
-            Map<Integer, WorkoutRoom> workoutRooms,
-            Map<Integer, PersonalTrainer> personalTrainers,
-            String booking) {
+    public SuperModel mapWorkoutsToBookings(SuperModel model, String booking) {
         query = "SELECT * FROM GetWorkoutsWithBooking";
         oneOrAllBookingID(booking);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -288,48 +285,49 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (bookings.containsKey(rs.getInt("Booking_ID"))) {
-                    if (!workouts.containsKey(rs.getInt("Workout_ID"))) {
+                if (model.getBookings().containsKey(rs.getInt("Booking_ID"))) {
+                    if (!model.getWorkouts().containsKey(rs.getInt("Workout_ID"))) {
 
-                        if (!workoutRooms.containsKey(rs.getInt("WorkoutRoom_ID"))) {
-                            workoutRooms.put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
+                        if (!model.getWorkoutRooms().containsKey(rs.getInt("WorkoutRoom_ID"))) {
+                            model.getWorkoutRooms().put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
                         } else {
-                            workoutRooms.get(rs.getInt("WorkoutRoom_ID")).setName(rs.getString("WorkoutRoom_Name"));
+                            model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")).setName(rs.getString("WorkoutRoom_Name"));
                         }
-                        if (!workoutTypes.containsKey(rs.getInt("WorkoutType_ID"))) {
-                            workoutTypes.put(rs.getInt("WorkoutType_ID"), new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name")));
+                        if (!model.getWorkoutTypes().containsKey(rs.getInt("WorkoutType_ID"))) {
+                            model.getWorkoutTypes().put(rs.getInt("WorkoutType_ID"), new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name")));
                         } else {
-                            workoutTypes.get(rs.getInt("WorkoutType_ID")).setName(rs.getString("WorkoutType_Name"));
+                            model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).setName(rs.getString("WorkoutType_Name"));
                         }
-                        if (!personalTrainers.containsKey(rs.getInt("PersonalTrainer_ID"))) {
-                            personalTrainers.put(rs.getInt("PersonalTrainer_ID"), new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name")));
+                        if (!model.getPersonalTrainers().containsKey(rs.getInt("PersonalTrainer_ID"))) {
+                            model.getPersonalTrainers().put(rs.getInt("PersonalTrainer_ID"), new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name")));
                         } else {
-                            personalTrainers.get(rs.getInt("PersonalTrainer_ID")).setName(rs.getString("PersonalTrainer_Name"));
+                            model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).setName(rs.getString("PersonalTrainer_Name"));
                         }
 
-                        workouts.put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
-                                personalTrainers.get(rs.getInt("PersonalTrainer_ID")),
+                        model.getWorkouts().put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
+                                model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")),
                                 rs.getInt("AvailableSlots"),
                                 rs.getDate("StartDate"),
                                 rs.getDate("EndDate"),
-                                workoutRooms.get(rs.getInt("WorkoutRoom_ID")),
-                                workoutTypes.get(rs.getInt("WorkoutType_ID"))));
-                        
-                        workoutRooms.get(rs.getInt("WorkoutRoom_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
-                        workoutTypes.get(rs.getInt("WorkoutType_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
-                        personalTrainers.get(rs.getInt("PersonalTrainer_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                                model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")),
+                                model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID"))));
+
+                        model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
+                        model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
+                        model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                     } else {
-                        workouts.get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                        model.getWorkouts().get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
                     }
                 }
-                bookings.get(rs.getInt("Booking_ID")).setWorkout(workouts.get(rs.getInt("Workout_ID")));
+                model.getBookings().get(rs.getInt("Booking_ID")).setWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
+        return model;
     }
 
-    public void mapBookingsToMembers(Map<Integer, Booking> bookings, Map<Integer, Member> members, String member) {
+    public SuperModel mapBookingsToMembers(SuperModel model, String member) {
         query = "SELECT * FROM Booking";
         oneOrAllMemberID(member);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -340,135 +338,119 @@ public class Repository {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                if (members.containsKey(rs.getInt("Member_ID"))) {
-                    if (!bookings.containsKey(rs.getInt("ID"))) {
-                        Booking booking = new Booking(rs.getInt("ID"), rs.getBoolean("CheckedIn"), members.get(rs.getInt("Member_ID")));
+                if (model.getMembers().containsKey(rs.getInt("Member_ID"))) {
+                    if (!model.getBookings().containsKey(rs.getInt("ID"))) {
+                        Booking booking = new Booking(rs.getInt("ID"), rs.getBoolean("CheckedIn"), model.getMembers().get(rs.getInt("Member_ID")));
 
-                        bookings.put(rs.getInt("ID"), booking);
-                        members.get(rs.getInt("Member_ID")).addBooking(booking);
+                        model.getBookings().put(rs.getInt("ID"), booking);
+                        model.getMembers().get(rs.getInt("Member_ID")).addBooking(booking);
                     } else {
-                        bookings.get(rs.getInt("ID")).setCheckedIn(rs.getBoolean("CheckedIn"));
+                        model.getBookings().get(rs.getInt("ID")).setCheckedIn(rs.getBoolean("CheckedIn"));
                     }
                 }
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-    }
-    
-    public String addMember(String inName, String inUsername, String inPassword){
-        
-        String returnStatement = ""; 
-        query = "call add_Member(?,?,?,?)";
-                
-        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                CallableStatement stmt = con.prepareCall(query)) {
-            
-            stmt.setString(1, inName);
-            stmt.setString(2, inUsername);
-            stmt.setString(3, inPassword);
-            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
-            rs = stmt.executeQuery();
-            
-            returnStatement = stmt.getString(4);
-           
-        } catch (SQLException ex) {
-            System.out.println(ex.getCause());
-        }
-        return returnStatement; 
-    }
-    
-    public String addPersonalTrainer(String inName, String inUsername, String inPassword){
-        
-        String returnStatement = ""; 
-        query = "call add_PersonlTrainer(?,?,?,?)";
-                
-        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                CallableStatement stmt = con.prepareCall(query)) {
-            
-            stmt.setString(1, inName);
-            stmt.setString(2, inUsername);
-            stmt.setString(3, inPassword);
-            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
-            rs = stmt.executeQuery();
-            
-            returnStatement = stmt.getString(4);
-            
-        } catch (SQLException ex) {
-            System.out.println(ex.getCause());
-        }
-        return returnStatement; 
+        return model;
     }
 
-    public String addReceptionist(String inName, String inUsername, String inPassword){
-        
-        String returnStatement = ""; 
-        query = "call add_Receptionist(?,?,?,?)";
-                
+    public String addMember(String inName, String inUsername, String inPassword) {
+        query = "call add_Member(?,?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
-            
+
             stmt.setString(1, inName);
             stmt.setString(2, inUsername);
             stmt.setString(3, inPassword);
             stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
-            
+
             returnStatement = stmt.getString(4);
-            
+
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement; 
+        return returnStatement;
     }
-    
-    public String addNote(String inMember_ID, String inNote){
-        
-        String returnStatement = ""; 
-        query = "call add_Note(?,?,?)";
-                
+
+    public String addPersonalTrainer(String inName, String inUsername, String inPassword) {
+        query = "call add_PersonlTrainer(?,?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
-            
+
+            stmt.setString(1, inName);
+            stmt.setString(2, inUsername);
+            stmt.setString(3, inPassword);
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
+            rs = stmt.executeQuery();
+
+            returnStatement = stmt.getString(4);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement;
+    }
+
+    public String addReceptionist(String inName, String inUsername, String inPassword) {
+        query = "call add_Receptionist(?,?,?,?)";
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                CallableStatement stmt = con.prepareCall(query)) {
+
+            stmt.setString(1, inName);
+            stmt.setString(2, inUsername);
+            stmt.setString(3, inPassword);
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
+            rs = stmt.executeQuery();
+
+            returnStatement = stmt.getString(4);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement;
+    }
+
+    public String addNote(String inMember_ID, String inNote) {
+        query = "call add_Note(?,?,?)";
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                CallableStatement stmt = con.prepareCall(query)) {
+
             stmt.setString(1, inMember_ID);
-            stmt.setString(2, inNote);    
+            stmt.setString(2, inNote);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
-            
+
             returnStatement = stmt.getString(3);
-            
+
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement; 
+        return returnStatement;
     }
-    
-    public String cancelBooking(String inMemberID, String inBookingID){
-        
-        String returnStatement = ""; 
+
+    public String cancelBooking(String inMemberID, String inBookingID) {
         query = "call cancelBooking(?,?,?)";
-                
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
-            
+
             stmt.setString(1, inMemberID);
             stmt.setString(2, inBookingID);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
-            
+
             returnStatement = stmt.getString(3);
-            
+
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement; 
+        return returnStatement;
     }
-    
-    public String createBooking(String inMemberID, String inWorkoutID){
-        
-        String returnStatement = ""; 
+
+    public String createBooking(String inMemberID, String inWorkoutID) {
         query = "call BestGymEver.createBooking(?,?,?)";
-                
+
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             stmt.setString(1, inMemberID);
@@ -476,27 +458,22 @@ public class Repository {
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             stmt.executeUpdate();
             System.out.println("Hello");
-            
-            
-                returnStatement = stmt.getString(3); 
-                
-            
-            
+
+            returnStatement = stmt.getString(3);
+
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement; 
+        return returnStatement;
     }
-    
-    public String createWorkout(String inStartDate, String inEndDate, String inAvailableSlots, 
-                                String inWorkoutRoom, String inWorkoutType, String inPersonalTrainer){
-        
-        String returnStatement = ""; 
+
+    public String createWorkout(String inStartDate, String inEndDate,
+            String inAvailableSlots, String inWorkoutRoom,
+            String inWorkoutType, String inPersonalTrainer) {
         query = "call createWorkout(?,?,?,?,?,?,?)";
-                
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
-            
+
             stmt.setString(1, inStartDate);
             stmt.setString(2, inEndDate);
             stmt.setString(3, inAvailableSlots);
@@ -505,12 +482,12 @@ public class Repository {
             stmt.setString(6, inPersonalTrainer);
             stmt.registerOutParameter(7, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
-            
+
             returnStatement = stmt.getString(7);
-            
+
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement; 
+        return returnStatement;
     }
 }
