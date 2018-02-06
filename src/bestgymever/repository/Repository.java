@@ -359,21 +359,20 @@ public class Repository {
     public String addMember(String inName, String inUsername, String inPassword){
         
         String returnStatement = ""; 
-        query = "call add_Member(?,?,?)";
+        query = "call add_Member(?,?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
-            
+                CallableStatement stmt = con.prepareCall(query)) {
+            stmt.setString(1, inName);
+            stmt.setString(2, inUsername);
+            stmt.setString(3, inPassword);
+            stmt.setString(4, returnStatement);
             rs = stmt.executeQuery();
             
             while(rs.next()){
                 returnStatement = rs.getString("returnStatement"); 
             }
-            
-            stmt.setString(1, inName);
-            stmt.setString(2, inUsername);
-            stmt.setString(3, inPassword);
-            
+           
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
@@ -386,7 +385,7 @@ public class Repository {
         query = "call add_PersonlTrainer(?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+                CallableStatement stmt = con.prepareCall(query)) {
             
             rs = stmt.executeQuery();
             
@@ -410,7 +409,7 @@ public class Repository {
         query = "call add_Receptionist(?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+                CallableStatement stmt = con.prepareCall(query)) {
             
             rs = stmt.executeQuery();
             
@@ -428,22 +427,21 @@ public class Repository {
         return returnStatement; 
     }
     
-    public String addMember(int inMember_ID, String inNote){
+    public String addNote(String inMember_ID, String inNote){
         
         String returnStatement = ""; 
-        query = "call add_Note(?,?)";
+        query = "call add_Note(?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
-            
+                CallableStatement stmt = con.prepareCall(query)) {
+            stmt.setString(1, inMember_ID);
+            stmt.setString(2, inNote);
+            stmt.setString(3, returnStatement);
             rs = stmt.executeQuery();
             
             while(rs.next()){
                 returnStatement = rs.getString("returnStatement"); 
             }
-            
-            stmt.setInt(1, inMember_ID);
-            stmt.setString(2, inNote);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -457,7 +455,7 @@ public class Repository {
         query = "call cancelBooking(?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+                CallableStatement stmt = con.prepareCall(query)) {
             
             rs = stmt.executeQuery();
             
@@ -474,22 +472,23 @@ public class Repository {
         return returnStatement; 
     }
     
-    public String createBooking(int inMemberID, int inWorkoutID){
+    public String createBooking(String inMemberID, String inWorkoutID){
         
         String returnStatement = ""; 
-        query = "call createBooking(?,?)";
+        query = "call BestGymEver.createBooking(?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+                CallableStatement stmt = con.prepareCall(query)) {
+            stmt.setString(1, inMemberID);
+            stmt.setString(2, inWorkoutID);
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
+            stmt.executeUpdate();
+            System.out.println("Hello");
             
-            rs = stmt.executeQuery();
             
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
+                returnStatement = stmt.getString(3); 
+                
             
-            stmt.setInt(1, inMemberID);
-            stmt.setInt(2, inWorkoutID);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -501,10 +500,10 @@ public class Repository {
                                 int inWorkoutType, int inPersonalTrainer){
         
         String returnStatement = ""; 
-        query = "call cancelBooking(?,?,?,?,?,?)";
+        query = "call createWorkout(?,?,?,?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
-                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+                CallableStatement stmt = con.prepareCall(query)) {
             
             rs = stmt.executeQuery();
             
