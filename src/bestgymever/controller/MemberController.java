@@ -15,8 +15,22 @@ public class MemberController implements IController{
     
 
     @Override
-    public SuperModel updateModel() {
-        return updateModel();
+    public SuperModel updateModel(String input) {
+        
+        model.getOrderMap().forEach((t, u) -> {
+            u.getProductList().clear();
+        });
+        try {
+            switch (state) {
+                
+            }
+        } catch (IndexOutOfBoundsException e) {
+            model.getViewList().clear();
+            model.getViewList().add("You can't select that");
+            AddMenyOptions();
+            state = OPTION;
+        }
+        return model;
     }
     
 }
