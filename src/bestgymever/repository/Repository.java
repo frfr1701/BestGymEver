@@ -171,7 +171,7 @@ public class Repository {
     }
 
     public void getWorkoutTypes(Map<Integer, WorkoutType> workoutTypes, String workoutType) {
-        query = "SELECT * FROM BestGymEver.PersonalTrainer";
+        query = "SELECT * FROM BestGymEver.WorkoutType";
         oneOrAll(workoutType);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
