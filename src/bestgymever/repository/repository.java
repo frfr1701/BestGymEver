@@ -20,7 +20,7 @@ public class Repository {
         query = isLongerThanOne(input) ? query + " where ID = ?" : query;
     }
 
-    private void oneOrAllNotes(String input) {
+    private void oneOrAllMemberID(String input) {
         query = isLongerThanOne(input) ? query + " where Member_ID = ?" : query;
     }
 
@@ -188,9 +188,9 @@ public class Repository {
         }
     }
 
-    public void getNotes(Map<Integer, Note> notes, Map<Integer, Member> members, String member) {
+    public void mapNotesToMembers(Map<Integer, Note> notes, Map<Integer, Member> members, String member) {
         query = "SELECT * FROM Note";
-        oneOrAllNotes(member);
+        oneOrAllMemberID(member);
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
             if (isLongerThanOne(member)) {
@@ -214,4 +214,32 @@ public class Repository {
             System.out.println(ex.getCause());
         }
     }
+    
+    public void mapBookingsToMembers(Map<Integer, Note> notes, Map<Integer, Member> members, String member) {
+        query = "SELECT * FROM Note";
+        oneOrAllMemberID(member);
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            if (isLongerThanOne(member)) {
+                stmt.setString(1, member);
+            }
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                if (!notes.containsKey(rs.getInt("ID"))) {
+                    if (members.containsKey(rs.getInt("Member_ID"))) {
+                        Note note = new Note(rs.getInt("ID"), rs.getString("Note"), members.get(rs.getInt("Member_ID")));
+                        
+                        notes.put(rs.getInt("ID"), note);
+                        members.get(rs.getInt("Member_ID")).addNote(note);
+                    }
+                } else {
+                    notes.get(rs.getInt("ID")).setNote(rs.getString("Note"));
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+    }
+    
 }
