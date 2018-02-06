@@ -303,6 +303,173 @@ public class Repository {
             System.out.println(ex.getCause());
         }
     }
-
     
+    public String addMember(String inName, String inUsername, String inPassword){
+        
+        String returnStatement = ""; 
+        query = "call add_Member(?,?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setString(1, inName);
+            stmt.setString(2, inUsername);
+            stmt.setString(3, inPassword);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
+    
+    public String addPersonalTrainer(String inName, String inUsername, String inPassword){
+        
+        String returnStatement = ""; 
+        query = "call add_PersonlTrainer(?,?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setString(1, inName);
+            stmt.setString(2, inUsername);
+            stmt.setString(3, inPassword);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
+
+    public String addReceptionist(String inName, String inUsername, String inPassword){
+        
+        String returnStatement = ""; 
+        query = "call add_Receptionist(?,?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setString(1, inName);
+            stmt.setString(2, inUsername);
+            stmt.setString(3, inPassword);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
+    
+    public String addMember(int inMember_ID, String inNote){
+        
+        String returnStatement = ""; 
+        query = "call add_Note(?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setInt(1, inMember_ID);
+            stmt.setString(2, inNote);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
+    
+    public String cancelBooking(int inMemberID, int inBookingID){
+        
+        String returnStatement = ""; 
+        query = "call cancelBooking(?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setInt(1, inMemberID);
+            stmt.setInt(2, inBookingID);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
+    
+    public String createBooking(int inMemberID, int inWorkoutID){
+        
+        String returnStatement = ""; 
+        query = "call createBooking(?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setInt(1, inMemberID);
+            stmt.setInt(2, inWorkoutID);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
+    
+    public String createWorkout(int inStartDate, int inEndDate, int inAvailableSlots, int inWorkoutRoom, 
+                                int inWorkoutType, int inPersonalTrainer){
+        
+        String returnStatement = ""; 
+        query = "call cancelBooking(?,?,?,?,?,?)";
+                
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                returnStatement = rs.getString("returnStatement"); 
+            }
+            
+            stmt.setInt(1, inStartDate);
+            stmt.setInt(2, inEndDate);
+            stmt.setInt(3, inAvailableSlots);
+            stmt.setInt(4, inWorkoutRoom);
+            stmt.setInt(5, inWorkoutType);
+            stmt.setInt(6, inPersonalTrainer);
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return returnStatement; 
+    }
 }
