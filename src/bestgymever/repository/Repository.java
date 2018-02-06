@@ -363,15 +363,14 @@ public class Repository {
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
+            
             stmt.setString(1, inName);
             stmt.setString(2, inUsername);
             stmt.setString(3, inPassword);
-            stmt.setString(4, returnStatement);
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
             
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
+            returnStatement = stmt.getString(4);
            
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -382,20 +381,18 @@ public class Repository {
     public String addPersonalTrainer(String inName, String inUsername, String inPassword){
         
         String returnStatement = ""; 
-        query = "call add_PersonlTrainer(?,?,?)";
+        query = "call add_PersonlTrainer(?,?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             
-            rs = stmt.executeQuery();
-            
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
-            
             stmt.setString(1, inName);
             stmt.setString(2, inUsername);
             stmt.setString(3, inPassword);
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
+            rs = stmt.executeQuery();
+            
+            returnStatement = stmt.getString(4);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -406,20 +403,18 @@ public class Repository {
     public String addReceptionist(String inName, String inUsername, String inPassword){
         
         String returnStatement = ""; 
-        query = "call add_Receptionist(?,?,?)";
+        query = "call add_Receptionist(?,?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             
-            rs = stmt.executeQuery();
-            
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
-            
             stmt.setString(1, inName);
             stmt.setString(2, inUsername);
             stmt.setString(3, inPassword);
+            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
+            rs = stmt.executeQuery();
+            
+            returnStatement = stmt.getString(4);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -434,14 +429,13 @@ public class Repository {
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
+            
             stmt.setString(1, inMember_ID);
-            stmt.setString(2, inNote);
-            stmt.setString(3, returnStatement);
+            stmt.setString(2, inNote);    
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
             
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
+            returnStatement = stmt.getString(3);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -449,22 +443,20 @@ public class Repository {
         return returnStatement; 
     }
     
-    public String cancelBooking(int inMemberID, int inBookingID){
+    public String cancelBooking(String inMemberID, String inBookingID){
         
         String returnStatement = ""; 
-        query = "call cancelBooking(?,?)";
+        query = "call cancelBooking(?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             
+            stmt.setString(1, inMemberID);
+            stmt.setString(2, inBookingID);
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
             
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
-            
-            stmt.setInt(1, inMemberID);
-            stmt.setInt(2, inBookingID);
+            returnStatement = stmt.getString(3);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -496,27 +488,25 @@ public class Repository {
         return returnStatement; 
     }
     
-    public String createWorkout(int inStartDate, int inEndDate, int inAvailableSlots, int inWorkoutRoom, 
-                                int inWorkoutType, int inPersonalTrainer){
+    public String createWorkout(String inStartDate, String inEndDate, String inAvailableSlots, 
+                                String inWorkoutRoom, String inWorkoutType, String inPersonalTrainer){
         
         String returnStatement = ""; 
-        query = "call createWorkout(?,?,?,?,?,?)";
+        query = "call createWorkout(?,?,?,?,?,?,?)";
                 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             
+            stmt.setString(1, inStartDate);
+            stmt.setString(2, inEndDate);
+            stmt.setString(3, inAvailableSlots);
+            stmt.setString(4, inWorkoutRoom);
+            stmt.setString(5, inWorkoutType);
+            stmt.setString(6, inPersonalTrainer);
+            stmt.registerOutParameter(7, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
             
-            while(rs.next()){
-                returnStatement = rs.getString("returnStatement"); 
-            }
-            
-            stmt.setInt(1, inStartDate);
-            stmt.setInt(2, inEndDate);
-            stmt.setInt(3, inAvailableSlots);
-            stmt.setInt(4, inWorkoutRoom);
-            stmt.setInt(5, inWorkoutType);
-            stmt.setInt(6, inPersonalTrainer);
+            returnStatement = stmt.getString(7);
             
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
