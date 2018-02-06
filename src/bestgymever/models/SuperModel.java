@@ -59,7 +59,7 @@ public class SuperModel {
         return viewList;
     }
 
-    public void update(FunInt fi) {
-        fi.update(this);
+    public void update(FunInt funInt) {
+        funInt.update(this);
     }
 }
