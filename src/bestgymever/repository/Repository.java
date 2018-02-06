@@ -192,6 +192,59 @@ public class Repository {
         }
     }
 
+    public void getWorkouts(Map<Integer, Workout> workouts,
+            Map<Integer, WorkoutType> workoutTypes,
+            Map<Integer, WorkoutRoom> workoutRooms,
+            Map<Integer, PersonalTrainer> personalTrainers,
+            String workout) {
+        query = "SELECT * FROM BestGymEver.GetWorkouts";
+        oneOrAll(workout);
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+                PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
+            if (isLongerThanOne(workout)) {
+                stmt.setString(1, workout);
+            }
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                if (!workouts.containsKey(rs.getInt("Workout_ID"))) {
+                    
+                    if (!workoutRooms.containsKey(rs.getInt("WorkoutRoom_ID"))) {
+                        workoutRooms.put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
+                    } else {
+                        workoutRooms.get(rs.getInt("WorkoutRoom_ID")).setName(rs.getString("WorkoutRoom_Name"));
+                    }
+                    if (!workoutTypes.containsKey(rs.getInt("WorkoutType_ID"))) {
+                        workoutTypes.put(rs.getInt("WorkoutType_ID"), new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name")));
+                    } else {
+                        workoutTypes.get(rs.getInt("WorkoutType_ID")).setName(rs.getString("WorkoutType_Name"));
+                    }
+                    if (!personalTrainers.containsKey(rs.getInt("PersonalTrainer_ID"))) {
+                        personalTrainers.put(rs.getInt("PersonalTrainer_ID"), new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name")));
+                    } else {
+                        personalTrainers.get(rs.getInt("PersonalTrainer_ID")).setName(rs.getString("PersonalTrainer_Name"));
+                    }
+                    
+                    workouts.put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
+                            personalTrainers.get(rs.getInt("PersonalTrainer_ID")),
+                            rs.getInt("AvailableSlots"),
+                            rs.getDate("StartDate"),
+                            rs.getDate("EndDate"),
+                            workoutRooms.get(rs.getInt("WorkoutRoom_ID")),
+                            workoutTypes.get(rs.getInt("WorkoutType_ID"))));
+                    
+                    workoutRooms.get(rs.getInt("WorkoutRoom_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                    workoutTypes.get(rs.getInt("WorkoutType_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                    personalTrainers.get(rs.getInt("PersonalTrainer_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                } else {
+                    workouts.get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+    }
+
     public void mapNotesToMembers(Map<Integer, Note> notes, Map<Integer, Member> members, String member) {
         query = "SELECT * FROM Note";
         oneOrAllMemberID(member);
@@ -239,33 +292,32 @@ public class Repository {
                     if (!workouts.containsKey(rs.getInt("Workout_ID"))) {
 
                         if (!workoutRooms.containsKey(rs.getInt("WorkoutRoom_ID"))) {
-                            WorkoutRoom workoutRoom = new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name"));
-                            workoutRooms.put(rs.getInt("WorkoutRoom_ID"), workoutRoom);
+                            workoutRooms.put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
                         } else {
                             workoutRooms.get(rs.getInt("WorkoutRoom_ID")).setName(rs.getString("WorkoutRoom_Name"));
                         }
                         if (!workoutTypes.containsKey(rs.getInt("WorkoutType_ID"))) {
-                            WorkoutType workoutType = new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name"));
-                            workoutTypes.put(rs.getInt("WorkoutType_ID"), workoutType);
+                            workoutTypes.put(rs.getInt("WorkoutType_ID"), new WorkoutType(rs.getInt("WorkoutType_ID"), rs.getString("WorkoutType_Name")));
                         } else {
                             workoutTypes.get(rs.getInt("WorkoutType_ID")).setName(rs.getString("WorkoutType_Name"));
                         }
                         if (!personalTrainers.containsKey(rs.getInt("PersonalTrainer_ID"))) {
-                            PersonalTrainer personalTrainer = new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name"));
-                            personalTrainers.put(rs.getInt("PersonalTrainer_ID"), personalTrainer);
+                            personalTrainers.put(rs.getInt("PersonalTrainer_ID"), new PersonalTrainer(rs.getInt("PersonalTrainer_ID"), rs.getString("PersonalTrainer_Name")));
                         } else {
                             personalTrainers.get(rs.getInt("PersonalTrainer_ID")).setName(rs.getString("PersonalTrainer_Name"));
                         }
 
-                        Workout workout = new Workout(rs.getInt("Workout_ID"),
+                        workouts.put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
                                 personalTrainers.get(rs.getInt("PersonalTrainer_ID")),
                                 rs.getInt("AvailableSlots"),
                                 rs.getDate("StartDate"),
                                 rs.getDate("EndDate"),
                                 workoutRooms.get(rs.getInt("WorkoutRoom_ID")),
-                                workoutTypes.get(rs.getInt("WorkoutType_ID")));
-
-                        workouts.put(rs.getInt("Workout_ID"), workout);
+                                workoutTypes.get(rs.getInt("WorkoutType_ID"))));
+                        
+                        workoutRooms.get(rs.getInt("WorkoutRoom_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                        workoutTypes.get(rs.getInt("WorkoutType_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
+                        personalTrainers.get(rs.getInt("PersonalTrainer_ID")).addWorkout(workouts.get(rs.getInt("Workout_ID")));
                     } else {
                         workouts.get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
                     }
@@ -352,6 +404,7 @@ public class Repository {
         return returnStatement; 
     }
 
+<<<<<<< HEAD
     public String addReceptionist(String inName, String inUsername, String inPassword){
         
         String returnStatement = ""; 
@@ -472,4 +525,6 @@ public class Repository {
         }
         return returnStatement; 
     }
+=======
+>>>>>>> Jakob
 }
