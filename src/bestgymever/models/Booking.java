@@ -5,13 +5,12 @@ public class Booking {
     private final int id;
     private boolean checkedIn;
     private final Member member;
-    private final Workout workout;
+    private Workout workout;
 
-    public Booking(int id, boolean checkedIn, Member member, Workout workout) {
+    public Booking(int id, boolean checkedIn, Member member) {
         this.id = id;
         this.checkedIn = checkedIn;
         this.member = member;
-        this.workout = workout;
     }
 
     public int getId() {
@@ -22,6 +21,10 @@ public class Booking {
         return member;
     }
 
+    public void setWorkout(Workout workout) {
+        this.workout = workout;
+    }
+    
     public Workout getWorkout() {
         return workout;
     }

@@ -12,7 +12,7 @@ public class Workout {
     private final WorkoutType workoutType;
     private final Map<Integer, Booking> bookings;
 
-    public Workout(int id, PersonalTrainer personalTrainer, int avalibleSlots, Date startDate, Date endDate, WorkoutRoom workoutRoom, WorkoutType workoutName) {
+    public Workout(int id, PersonalTrainer personalTrainer, int avalibleSlots, Date startDate, Date endDate, WorkoutRoom workoutRoom, WorkoutType workoutType) {
         bookings = new HashMap<>();
         this.id = id;
         this.personalTrainer = personalTrainer;
@@ -20,7 +20,7 @@ public class Workout {
         this.startDate = startDate;
         this.endDate = endDate;
         this.workoutRoom = workoutRoom;
-        this.workoutType = workoutName;
+        this.workoutType = workoutType;
     }
 
     public int getId() {

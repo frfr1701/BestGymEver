@@ -14,8 +14,13 @@ public class TEMPDATEFORMAT {
         Repository hej = new Repository();
         SuperModel a = new SuperModel();
         
-        hej.getMembers(a.getMembers(), "4");
-        System.out.println(a.getMembers().size());
+        
+        Map<Integer, PersonalTrainer> trainers = new HashMap<>();
+        
+        hej.getPersonalTrainers(trainers, "3");
+        
+        System.out.println(trainers.size());
+        
         
     }
 }
