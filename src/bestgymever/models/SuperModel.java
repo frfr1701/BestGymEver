@@ -4,6 +4,8 @@ import java.util.*;
 
 public class SuperModel {
 
+    private final List<String> viewList;
+    
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
     private final Map<Integer, Workout> workouts;
@@ -12,6 +14,8 @@ public class SuperModel {
     
 
     public SuperModel() {
+        this.viewList = new ArrayList<>();
+        
         this.members = new HashMap<>();
         this.personalTrainers = new HashMap<>();
         this.workouts = new HashMap<>();
@@ -39,43 +43,7 @@ public class SuperModel {
         return workoutTypes;
     }
     
-    public void addMember(Member member) {
-        members.put(member.getId(), member);
-    }
-
-    public void removeMember(Member member) {
-        members.remove(member.getId());
-    }
-
-    public void addPersonalTrainer(PersonalTrainer personalTrainer) {
-        personalTrainers.put(personalTrainer.getId(), personalTrainer);
-    }
-
-    public void removePersonalTrainer(PersonalTrainer personalTrainer) {
-        personalTrainers.remove(personalTrainer.getId());
-    }
-
-    public void addWorkout(Workout workout) {
-        workouts.put(workout.getId(), workout);
-    }
-
-    public void removeWorkout(Workout workout) {
-        workouts.remove(workout.getId());
-    }
-
-    public void addWorkoutType(WorkoutType workoutType) {
-        workoutTypes.put(workoutType.getId(), workoutType);
-    }
-
-    public void removeWorkoutType(WorkoutType workoutType) {
-        workouts.remove(workoutType.getId());
-    }
-
-    public void addWorkoutRoom(WorkoutRoom workoutRoom) {
-        workoutRooms.put(workoutRoom.getId(), workoutRoom);
-    }
-
-    public void removeWorkoutRoom(WorkoutRoom workoutRoom) {
-        workoutRooms.remove(workoutRoom.getId());
+    public List<String> getViewList() {
+        return viewList;
     }
 }
