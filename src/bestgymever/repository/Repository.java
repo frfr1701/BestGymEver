@@ -404,7 +404,6 @@ public class Repository {
         return returnStatement; 
     }
 
-<<<<<<< HEAD
     public String addReceptionist(String inName, String inUsername, String inPassword){
         
         String returnStatement = ""; 
@@ -525,6 +524,4 @@ public class Repository {
         }
         return returnStatement; 
     }
-=======
->>>>>>> Jakob
 }
