@@ -1,22 +1,25 @@
 package bestgymever.controller;
 
+import static bestgymever.controller.MemberState.*;
 import bestgymever.models.*;
 
+public class MemberController implements IController {
 
-public class MemberController implements IController{
-    
     private final SuperModel model;
-    private State state;
+    private MemberState state;
 
-    public MemberController(SuperModel model, State state) {
+    public MemberController(SuperModel model, MemberState state) {
         this.model = model;
-        this.state = State.START;
+        this.state = START;
     }
-    
 
     @Override
-    public SuperModel updateModel() {
-        return updateModel();
+    public void updateModel(String input) {
+
     }
-    
+
+    @Override
+    public void updateView() {
+    }
+
 }

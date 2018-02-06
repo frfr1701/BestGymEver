@@ -11,6 +11,7 @@ public class SuperModel {
     private final Map<Integer, Workout> workouts;
     private final Map<Integer, WorkoutRoom> workoutRooms;
     private final Map<Integer, WorkoutType> workoutTypes;
+    private final Map<Integer, Note> notes;
     
 
     public SuperModel() {
@@ -21,10 +22,15 @@ public class SuperModel {
         this.workouts = new HashMap<>();
         this.workoutRooms = new HashMap<>();
         this.workoutTypes = new HashMap<>();
+        this.notes = new HashMap<>();
     }
 
     public Map<Integer, Member> getMembers() {
         return members;
+    }
+
+    public Map<Integer, Note> getNotes() {
+        return notes;
     }
 
     public Map<Integer, PersonalTrainer> getPersonalTrainers() {

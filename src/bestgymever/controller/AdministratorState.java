@@ -1,5 +1,5 @@
 package bestgymever.controller;
 
-public enum State {
+public enum AdministratorState{
     START, USERNAME, PASSWORD, MENY, OPTION, SHOWORDER, SHOWALLCUSTOMERS, CHOOSECOLOR,CHOOSESIZE,CHOOSEORDER, MAKETHEORDER;
 }
