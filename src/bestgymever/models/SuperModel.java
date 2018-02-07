@@ -7,6 +7,7 @@ public class SuperModel {
 
     private IPerson user;
     private String username, password;
+    private final List<Workout> tempWorkouts;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
@@ -19,6 +20,7 @@ public class SuperModel {
     public SuperModel() {
         this.bookings = new HashMap<>();
         this.viewList = new ArrayList<>();
+        this.tempWorkouts = new ArrayList<>();
 
         this.members = new HashMap<>();
         this.personalTrainers = new HashMap<>();

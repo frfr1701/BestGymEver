@@ -1,6 +1,6 @@
 package bestgymever.models;
 
-public class Note {
+public class Note implements IModel { 
 
     private final int id;
     private String note;
@@ -26,5 +26,10 @@ public class Note {
 
     public void setNote(String note) {
         this.note = note;
+    }
+    
+    @Override
+    public String toString(){
+        return String.valueOf(note);
     }
 }

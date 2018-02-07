@@ -244,7 +244,7 @@ public class Repository {
                     model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                     model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                 } else {
-                    model.getWorkouts().get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                    model.getWorkouts().get(rs.getInt("Workout_ID")).setAvailableSlots(rs.getInt("AvailableSlots"));
                 }
             }
         } catch (SQLException ex) {
@@ -323,7 +323,7 @@ public class Repository {
                         model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                         model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                     } else {
-                        model.getWorkouts().get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                        model.getWorkouts().get(rs.getInt("Workout_ID")).setAvailableSlots(rs.getInt("AvailableSlots"));
                     }
                 }
                 model.getBookings().get(rs.getInt("Booking_ID")).setWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));

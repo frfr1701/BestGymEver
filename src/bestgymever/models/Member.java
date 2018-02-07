@@ -2,7 +2,7 @@ package bestgymever.models;
 
 import java.util.*;
 
-public class Member implements IPerson{
+public class Member implements IPerson, IModel{
 
     private final int id;
     private String name;
@@ -51,5 +51,10 @@ public class Member implements IPerson{
 
     public void removeNote(Note note) {
         notes.remove(note.getId());
+    }
+    
+    @Override
+    public String toString(){
+        return String.valueOf(name);
     }
 }
