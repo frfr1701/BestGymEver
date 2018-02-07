@@ -325,8 +325,8 @@ public class Repository {
                     } else {
                         model.getWorkouts().get(rs.getInt("Workout_ID")).setAvailableSlots(rs.getInt("AvailableSlots"));
                     }
+                    model.getBookings().get(rs.getInt("Booking_ID")).setWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                 }
-                model.getBookings().get(rs.getInt("Booking_ID")).setWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
