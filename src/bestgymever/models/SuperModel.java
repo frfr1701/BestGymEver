@@ -4,23 +4,34 @@ import java.util.*;
 
 public class SuperModel {
 
+    private String username, password;
+    private final List<String> viewList;
+    
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
     private final Map<Integer, Workout> workouts;
     private final Map<Integer, WorkoutRoom> workoutRooms;
     private final Map<Integer, WorkoutType> workoutTypes;
+    private final Map<Integer, Note> notes;
     
 
     public SuperModel() {
+        this.viewList = new ArrayList<>();
+        
         this.members = new HashMap<>();
         this.personalTrainers = new HashMap<>();
         this.workouts = new HashMap<>();
         this.workoutRooms = new HashMap<>();
         this.workoutTypes = new HashMap<>();
+        this.notes = new HashMap<>();
     }
 
     public Map<Integer, Member> getMembers() {
         return members;
+    }
+
+    public Map<Integer, Note> getNotes() {
+        return notes;
     }
 
     public Map<Integer, PersonalTrainer> getPersonalTrainers() {
@@ -39,43 +50,25 @@ public class SuperModel {
         return workoutTypes;
     }
     
-    public void addMember(Member member) {
-        members.put(member.getId(), member);
+    public List<String> getViewList() {
+        return viewList;
     }
 
-    public void removeMember(Member member) {
-        members.remove(member.getId());
+    public String getUsername() {
+        return username;
     }
 
-    public void addPersonalTrainer(PersonalTrainer personalTrainer) {
-        personalTrainers.put(personalTrainer.getId(), personalTrainer);
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void removePersonalTrainer(PersonalTrainer personalTrainer) {
-        personalTrainers.remove(personalTrainer.getId());
+    public String getPassword() {
+        return password;
     }
 
-    public void addWorkout(Workout workout) {
-        workouts.put(workout.getId(), workout);
+    public void setPassword(String password) {
+        this.password = password;
     }
-
-    public void removeWorkout(Workout workout) {
-        workouts.remove(workout.getId());
-    }
-
-    public void addWorkoutType(WorkoutType workoutType) {
-        workoutTypes.put(workoutType.getId(), workoutType);
-    }
-
-    public void removeWorkoutType(WorkoutType workoutType) {
-        workouts.remove(workoutType.getId());
-    }
-
-    public void addWorkoutRoom(WorkoutRoom workoutRoom) {
-        workoutRooms.put(workoutRoom.getId(), workoutRoom);
-    }
-
-    public void removeWorkoutRoom(WorkoutRoom workoutRoom) {
-        workoutRooms.remove(workoutRoom.getId());
-    }
+    
+    
 }
