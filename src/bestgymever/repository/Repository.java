@@ -457,8 +457,7 @@ public class Repository {
             stmt.setString(2, inWorkoutID);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             stmt.executeUpdate();
-            System.out.println("Hello");
-
+            
             returnStatement = stmt.getString(3);
 
         } catch (SQLException ex) {
