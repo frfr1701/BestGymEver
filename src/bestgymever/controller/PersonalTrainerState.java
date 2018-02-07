@@ -5,5 +5,5 @@ package bestgymever.controller;
  * @author johaneriksson
  */
 public enum PersonalTrainerState {
-     START, USERNAME, PASSWORD, MENY, CHOOSEFORNOTE, CHOOSEFORBOOKING;
+     START, USERNAME, PASSWORD, OPTION, MENY, CHOOSEMEMBERNOTE, CHOOSEMEMBERWORKOUT, ADDMEMBERNOTE
 }
