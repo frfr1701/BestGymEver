@@ -1,6 +1,6 @@
 package bestgymever.models;
 
-public class Receptionist implements IPerson{
+public class Receptionist implements IPerson, IModel{
 
     private final int id;
 
@@ -10,5 +10,10 @@ public class Receptionist implements IPerson{
 
     public int getId() {
         return id;
+    }
+    
+    @Override
+    public String toString(){
+        return String.valueOf(id);
     }
 }

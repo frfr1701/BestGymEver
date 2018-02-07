@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package bestgymever.controller;
+package bestgymever.models;
 
 /**
  *
  * @author Senad Hasic
  */
-public enum ReceptionistState {
-      START, USERNAME, PASSWORD, CHOOSEWORKOUT;
+public interface IModel {
+    
+
+    @Override
+    public String toString();
+    
 }

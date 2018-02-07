@@ -2,10 +2,10 @@ package bestgymever.models;
 
 import java.util.*;
 
-public class Workout {
+public class Workout implements IModel {
 
     private final int id;
-    private int avalibleSlots;
+    private int availableSlots;
     private final PersonalTrainer personalTrainer;
     private final Date startDate, endDate;
     private final WorkoutRoom workoutRoom;
@@ -16,7 +16,7 @@ public class Workout {
         bookings = new HashMap<>();
         this.id = id;
         this.personalTrainer = personalTrainer;
-        this.avalibleSlots = avalibleSlots;
+        this.availableSlots = avalibleSlots;
         this.startDate = startDate;
         this.endDate = endDate;
         this.workoutRoom = workoutRoom;
@@ -27,12 +27,12 @@ public class Workout {
         return id;
     }
 
-    public int getAvalibleSlots() {
-        return avalibleSlots;
+    public int getAvailableSlots() {
+        return availableSlots;
     }
 
-    public void setAvalibleSlots(int avalibleSlots) {
-        this.avalibleSlots = avalibleSlots;
+    public void setAvailableSlots(int availableSlots) {
+        this.availableSlots = availableSlots;
     }
 
     public Date getStarDate() {
@@ -65,5 +65,12 @@ public class Workout {
 
     public void removeBookings(Booking booking) {
         bookings.remove(booking.getId());
+    }
+    
+    @Override
+    public String toString(){
+        return String.valueOf("Availableslots: " + availableSlots + "\tpersonalTrainer: " 
+                + personalTrainer + "\tStartdate-Enddate: " + startDate +"-"+endDate + "\tWorkoutroom: " + workoutRoom 
+                + "\tWorkouttype: " + workoutType);
     }
 }

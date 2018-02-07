@@ -12,9 +12,11 @@ public class ReceptionistController {
     Repository repository;
     ReceptionistState state;
 
-    FunInt f1 = (m) -> repository.getMembers(m, "");
-    FunInt f2 = (m) -> repository.mapBookingsToMembers(m, "");
-    FunInt f3 = (m) -> repository.mapWorkoutsToBookings(m, "");
+    FunInt getmembers = (m) -> repository.getMembers(m, "");
+    FunInt getbookingsformembers = (m) -> repository.mapBookingsToMembers(m, "");
+    FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
+    FunInt login = (m) -> repository.ReceptionistlogIn(m, model.getUsername(), model.getPassword());
+   
 
     public ReceptionistController(SuperModel model, ConsoleView view, Repository repository) {
 
@@ -29,14 +31,26 @@ public class ReceptionistController {
 
         switch (state) {
             case USERNAME:
+                model.setUsername(input);
+                state = PASSWORD;
+                model.getViewList().add("Write password: ");
 
             case PASSWORD:
 
-                break;
+                model.setPassword(input);
+                model.update(login);
+                if (model.getUser() == null) {
+                    state = START;
+                }
+                else
+                    state = CHOOSEWORKOUT;
+                break;    
+            case CHOOSEWORKOUT:
+                model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
+                
+                
             default:
                 model.getViewList().add("Write username: ");
-                
-
                 state = USERNAME;
         }
 
