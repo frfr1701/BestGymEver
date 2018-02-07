@@ -11,7 +11,7 @@ public class ReceptionistController {
     ConsoleView view;
     Repository repository;
     ReceptionistState state;
-
+    
     FunInt getmembers = (m) -> repository.getMembers(m, "");
     FunInt getbookingsformembers = (m) -> repository.mapBookingsToMembers(m, "");
     FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
@@ -34,6 +34,7 @@ public class ReceptionistController {
                 model.setUsername(input);
                 state = PASSWORD;
                 model.getViewList().add("Write password: ");
+                break;
 
             case PASSWORD:
 
@@ -42,11 +43,19 @@ public class ReceptionistController {
                 if (model.getUser() == null) {
                     state = START;
                 }
-                else
+                else {
+                    model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
+                    model.getWorkouts().values().forEach((workout) -> { 
+                        model.getViewList().add(workout.toString());
+                    });
                     state = CHOOSEWORKOUT;
-                break;    
+                    break;
+                }
+               break;
+                
             case CHOOSEWORKOUT:
-                model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
+                model.getViewList().add("Which workout would you like to add to? ");
+                break;
                 
                 
             default:
