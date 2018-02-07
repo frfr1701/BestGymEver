@@ -56,7 +56,12 @@ public class PersonalTrainerController implements IController {
             case OPTION:
                 switch(input){
                     case "1":
+                        int i = 1; 
                         model.update(f2);
+                        model.getMembers().values().forEach((member) -> {
+                                model.getViewList().add(member.getName());
+                                
+                        });
                         state = CHOOSEMEMBERWORKOUT;
                         break;
                     case "2":
@@ -74,10 +79,12 @@ public class PersonalTrainerController implements IController {
                 break; 
             
             case CHOOSEMEMBERWORKOUT:
+                
                 model.getMembers().values().forEach((member) -> {
                     member.getBookings().values().stream()
                             .filter(booking -> booking.isCheckedIn() 
                                     && booking.getWorkout().getEndDate().before(new Date()))
+                            .map(Booking::getWorkout)
                             .forEach((t) -> {
                                 model.getViewList().add(t.toString());
                             });
