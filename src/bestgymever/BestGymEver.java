@@ -20,7 +20,7 @@ public class BestGymEver {
         Repository repository = new Repository();
         SuperModel model = new SuperModel();
         ConsoleView view = new ConsoleView();
-        AdministratorController controller = new AdministratorController(model, view, repository);
+        ReceptionistController controller = new ReceptionistController(model, view, repository);
         controller.updateModel("");
     }
 }
