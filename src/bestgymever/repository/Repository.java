@@ -453,6 +453,7 @@ public class Repository {
 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
+            
             stmt.setString(1, inMemberID);
             stmt.setString(2, inWorkoutID);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
