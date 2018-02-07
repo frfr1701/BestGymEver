@@ -32,7 +32,7 @@ public class Repository {
         return input.length() > 0;
     }
 
-    public int ReceptionistlogIn(String username, String password) {
+    public SuperModel ReceptionistlogIn(SuperModel model, String username, String password) {
         query = "SELECT * FROM BestGymEver.ReceptionistLogin where Username = ? and Password = ?";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
@@ -42,15 +42,15 @@ public class Repository {
 
             rs = stmt.executeQuery();
             while (rs.next()) {
-                return rs.getInt("ID");
+                model.setUser(new Receptionist(rs.getInt("ID")));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return -1;
+        return model;
     }
 
-    public int AdministratorlogIn(String username, String password) {
+    public SuperModel AdministratorlogIn(SuperModel model, String username, String password) {
         query = "SELECT * FROM BestGymEver.AdministratorLogin where Username = ? and Password = ?";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
@@ -60,15 +60,15 @@ public class Repository {
 
             rs = stmt.executeQuery();
             while (rs.next()) {
-                return rs.getInt("ID");
+                    model.setUser(new Administrator(rs.getInt("ID")));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return -1;
+        return model;
     }
 
-    public int PersonalTrainerlogIn(String username, String password) {
+    public SuperModel PersonalTrainerlogIn(SuperModel model, String username, String password) {
         query = "SELECT * FROM BestGymEver.PersonalTrainerLogin where Username = ? and Password = ?";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
@@ -78,15 +78,18 @@ public class Repository {
 
             rs = stmt.executeQuery();
             while (rs.next()) {
-                return rs.getInt("ID");
+                if (!model.getPersonalTrainers().containsKey(rs.getInt("ID"))) {
+                    model.getPersonalTrainers().put(rs.getInt("ID"), new PersonalTrainer(rs.getInt("ID"), rs.getString("Name")));   
+                    model.setUser(model.getPersonalTrainers().get(rs.getInt("ID")));
+                }      
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return -1;
+        return model;
     }
 
-    public int MemberlogIn(String username, String password) {
+    public SuperModel MemberlogIn(SuperModel model, String username, String password) {
         query = "SELECT * FROM BestGymEver.MemberLogin where Username = ? and Password = ?";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 PreparedStatement stmt = con.prepareStatement(query, TYPE_SCROLL_SENSITIVE, CONCUR_READ_ONLY)) {
@@ -96,12 +99,16 @@ public class Repository {
 
             rs = stmt.executeQuery();
             while (rs.next()) {
-                return rs.getInt("ID");
+                if (!model.getMembers().containsKey(rs.getInt("ID"))) {
+                    model.getMembers().put(rs.getInt("ID"), new Member(rs.getInt("ID"), rs.getString("Name")));   
+                    model.setUser(model.getMembers().get(rs.getInt("ID")));
+                }              
             }
         } catch (SQLException ex) {
+            System.out.println("hello");
             System.out.println(ex.getCause());
         }
-        return -1;
+        return model;
     }
 
     public SuperModel getMembers(SuperModel model, String member) {

@@ -1,5 +1,5 @@
 package bestgymever.controller;
 
 public enum MemberState {
-    START
+    START, USERNAME, PASSWORD, MENY, OPTION, BOOKINGS, BOOKING;
 }

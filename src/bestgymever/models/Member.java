@@ -2,7 +2,7 @@ package bestgymever.models;
 
 import java.util.*;
 
-public class Member {
+public class Member implements IPerson{
 
     private final int id;
     private String name;
@@ -16,6 +16,7 @@ public class Member {
         this.name = name;
     }
 
+    @Override
     public int getId() {
         return id;
     }
