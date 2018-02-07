@@ -47,7 +47,7 @@ public class Workout {
         return workoutRoom;
     }
 
-    public WorkoutType getWorkoutName() {
+    public WorkoutType getWorkoutType() {
         return workoutType;
     }
 
