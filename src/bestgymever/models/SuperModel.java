@@ -5,9 +5,9 @@ import java.util.*;
 
 public class SuperModel {
 
+    private IPerson user;
     private String username, password;
     private final List<String> viewList;
-
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
     private final Map<Integer, Workout> workouts;
@@ -74,6 +74,14 @@ public class SuperModel {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public IPerson getUser() {
+        return user;
+    }
+
+    public void setUser(IPerson user) {
+        this.user = user;
     }
     
     public void update(FunInt funInt) {

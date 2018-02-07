@@ -2,7 +2,7 @@ package bestgymever.models;
 
 import java.util.*;
 
-public class PersonalTrainer {
+public class PersonalTrainer implements IPerson{
 
     private final int id;
     private String name;

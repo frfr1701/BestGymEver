@@ -1,6 +1,6 @@
 package bestgymever.models;
 
-public class Receptionist {
+public class Receptionist implements IPerson{
 
     private final int id;
 

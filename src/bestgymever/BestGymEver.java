@@ -29,23 +29,23 @@ public class BestGymEver {
         String choice = sc.nextLine();
         switch (choice){
             case "1":
-                AdministratorController controller = new AdministratorController(model, view, repository);
-                controller.updateModel("");
+                AdministratorController administratorController = new AdministratorController(model, view, repository);
+                administratorController.updateModel("");
                 break choice;
                 
             case "2":
-                ReceptionistController controller2 = new ReceptionistController(model, view, repository);
-                controller2.updateModel("");
+                ReceptionistController receptionistController = new ReceptionistController(model, view, repository);
+                receptionistController.updateModel("");
                 break choice;
                 
             case "3":
-                MemberController controller3 = new MemberController(model, view, repository);
-                controller3.updateModel("");
+                MemberController memberController = new MemberController(model, view, repository);
+                memberController.updateModel("");
                 break choice;
                 
             case "4":
-                PersonalTrainerController controller4 = new PersonalTrainerController(model, view, repository);
-                controller4.updateModel("");
+                PersonalTrainerController personalTrainerController = new PersonalTrainerController(model, view, repository);
+                personalTrainerController.updateModel("");
                 break choice;
       
             default:

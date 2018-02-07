@@ -1,6 +1,6 @@
 package bestgymever.models;
 
-public class Administrator {
+public class Administrator implements IPerson{
 
     private final int id;
 
