@@ -12,10 +12,9 @@ public class AdministratorController implements IController {
 
     FunInt f1 = (m) -> repository.getMembers(m, "");
     FunInt f2 = (m) -> repository.mapNotesToMembers(m, "");
-    FunInt f3 = (m) -> repository.mapNotesToMembers(m, "");
-    FunInt f4 = (m) -> repository.mapNotesToMembers(m, "");
-    FunInt f5 = (m) -> repository.mapNotesToMembers(m, "");
-    FunInt f6 = (m) -> repository.mapNotesToMembers(m, "");
+    FunInt f3 = (m) -> repository.mapBookingsToMembers(m, "");
+    FunInt f4 = (m) -> repository.mapWorkoutsToBookings(m, "");
+    
 
     public AdministratorController(SuperModel model, ConsoleView view, Repository repository) {
         this.model = model;
@@ -27,13 +26,14 @@ public class AdministratorController implements IController {
     public void updateModel(String input) {
         model.getViewList().clear();
         
-        model.update(f1.andThen(f2).andThen(f3).andThen(f4).andThen(f5).andThen(f6));
+        model.update(f1.andThen(f2).andThen(f3).andThen(f4));
         
         model.getMembers().values().forEach((member) -> {
             model.getViewList().add(member.getName());
             member.getNotes().values().forEach((note) -> {
                 model.getViewList().add(note.getNote());
             });
+            model.getViewList().add("");
         });
         
         updateView();

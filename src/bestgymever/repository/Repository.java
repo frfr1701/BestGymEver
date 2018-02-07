@@ -260,8 +260,8 @@ public class Repository {
                 if (!model.getNotes().containsKey(rs.getInt("ID"))) {
                     if (model.getMembers().containsKey(rs.getInt("Member_ID"))) {
                         Note note = new Note(rs.getInt("ID"), rs.getString("Note"), model.getMembers().get(rs.getInt("Member_ID")));
-
                         model.getNotes().put(rs.getInt("ID"), note);
+
                         model.getMembers().get(rs.getInt("Member_ID")).addNote(note);
                     }
                 } else {
