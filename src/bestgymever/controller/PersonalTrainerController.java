@@ -4,6 +4,7 @@ import static bestgymever.controller.PersonalTrainerState.*;
 import bestgymever.models.*;
 import bestgymever.repository.*;
 import bestgymever.view.*;
+import java.util.Date;
 import java.util.Scanner;
 
 public class PersonalTrainerController implements IController {
@@ -31,20 +32,42 @@ public class PersonalTrainerController implements IController {
     public void updateModel(String input) { 
         model.getViewList().clear();
         
+        model.update(f1.andThen(f2).andThen(f3).andThen(f4));
+        
         switch (state){
             case USERNAME:
+                
                 break;
             case PASSWORD:
+                
+                break; 
+            
+            case MENY:
+                model.getMembers().values().forEach((member) -> {
+                    model.getViewList().add(member.getName());
+                });
+                
+                break;
+            case CHOOSEFORNOTE:
+                
+                
+                break; 
+            case CHOOSEFORBOOKING:
+                model.getMembers().values().forEach((member) -> {
+                    member.getBookings().values().stream()
+                            .filter(booking -> booking.isCheckedIn() 
+                                    && booking.getWorkout().getEndDate().before(new Date()))
+                            .forEach((t) -> {
+                                model.getViewList().add(t.toString());
+                            });
+            });
+                
                 break; 
             default:    
                 
                 
                 
         }
-                
-                
-                
-        
         updateView(); 
     }
 
@@ -52,16 +75,5 @@ public class PersonalTrainerController implements IController {
     public void updateView() {
         updateModel(view.display(model.getViewList()));
     }
-    
-//    public void testlog(){
-//        String inputUsr; 
-//        String inputPsw; 
-//        Scanner sc = new Scanner(System.in); 
-//        System.out.println("Username:");
-//        inputUsr = sc.nextLine(); 
-//        System.out.println("Password:");
-//        inputPsw = sc.nextLine(); 
-//        System.out.println(repository.PersonalTrainerlogIn(inputUsr, inputPsw));
-//    }
     
 }
