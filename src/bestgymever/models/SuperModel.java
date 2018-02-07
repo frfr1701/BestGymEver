@@ -6,7 +6,7 @@ import java.util.*;
 public class SuperModel {
 
     private IPerson user;
-    private String username, password;
+    private String username, password, name;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
@@ -58,6 +58,14 @@ public class SuperModel {
 
     public List<String> getViewList() {
         return viewList;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {

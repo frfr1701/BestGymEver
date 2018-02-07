@@ -400,15 +400,14 @@ public class Repository {
         return returnStatement;
     }
 
-    public String addReceptionist(String inName, String inUsername, String inPassword) {
-        query = "call add_Receptionist(?,?,?,?)";
+    public String addReceptionist(String inUsername, String inPassword) {
+        query = "call add_Receptionist(?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
-            stmt.setString(1, inName);
-            stmt.setString(2, inUsername);
-            stmt.setString(3, inPassword);
-            stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
+            stmt.setString(1, inUsername);
+            stmt.setString(2, inPassword);
+            stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
 
             returnStatement = stmt.getString(4);

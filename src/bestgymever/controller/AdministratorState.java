@@ -1,5 +1,5 @@
 package bestgymever.controller;
 
 public enum AdministratorState{
-    START, USERNAME, PASSWORD;
+    START, USERNAME, PASSWORD, MENU;
 }
