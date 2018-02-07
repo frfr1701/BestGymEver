@@ -16,7 +16,6 @@ public class SuperModel {
     private final Map<Integer, WorkoutType> workoutTypes;
     private final Map<Integer, Booking> bookings;
     private final Map<Integer, Note> notes;
-    private final List<Workout> tempWorkouts;
     private final List<Booking> tempBookings;
 
     public SuperModel() {
@@ -31,7 +30,6 @@ public class SuperModel {
         this.workoutTypes = new HashMap<>();
         this.notes = new HashMap<>();
         this.tempBookings = new ArrayList<>();
-        this.tempWorkouts = new ArrayList<>();
     }
 
     public Map<Integer, Member> getMembers() {
