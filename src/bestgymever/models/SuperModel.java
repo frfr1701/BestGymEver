@@ -6,7 +6,8 @@ import java.util.*;
 public class SuperModel {
 
     private IPerson user;
-    private String username, password, name;
+    private String username, password, returnStatement, name;
+    private final List<Workout> tempWorkouts;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
@@ -15,10 +16,12 @@ public class SuperModel {
     private final Map<Integer, WorkoutType> workoutTypes;
     private final Map<Integer, Booking> bookings;
     private final Map<Integer, Note> notes;
+    private final List<Booking> tempBookings;
 
     public SuperModel() {
         this.bookings = new HashMap<>();
         this.viewList = new ArrayList<>();
+        this.tempWorkouts = new ArrayList<>();
 
         this.members = new HashMap<>();
         this.personalTrainers = new HashMap<>();
@@ -26,6 +29,7 @@ public class SuperModel {
         this.workoutRooms = new HashMap<>();
         this.workoutTypes = new HashMap<>();
         this.notes = new HashMap<>();
+        this.tempBookings = new ArrayList<>();
     }
 
     public Map<Integer, Member> getMembers() {
@@ -94,5 +98,21 @@ public class SuperModel {
     
     public void update(FunInt funInt) {
         funInt.update(this);
+    }
+
+    public List<Booking> getTempBookings() {
+        return tempBookings;
+    }
+
+    public List<Workout> getTempWorkouts() {
+        return tempWorkouts;
+    }
+
+    public String getReturnStatement() {
+        return returnStatement;
+    }
+
+    public void setReturnStatement(String returnStatement) {
+        this.returnStatement = returnStatement;
     }
 }

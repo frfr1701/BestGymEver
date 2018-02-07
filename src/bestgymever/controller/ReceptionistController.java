@@ -11,10 +11,12 @@ public class ReceptionistController {
     ConsoleView view;
     Repository repository;
     ReceptionistState state;
-
-    FunInt f1 = (m) -> repository.getMembers(m, "");
-    FunInt f2 = (m) -> repository.mapBookingsToMembers(m, "");
-    FunInt f3 = (m) -> repository.mapWorkoutsToBookings(m, "");
+    
+    FunInt getmembers = (m) -> repository.getMembers(m, "");
+    FunInt getbookingsformembers = (m) -> repository.mapBookingsToMembers(m, "");
+    FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
+    FunInt login = (m) -> repository.ReceptionistlogIn(m, model.getUsername(), model.getPassword());
+   
 
     public ReceptionistController(SuperModel model, ConsoleView view, Repository repository) {
 
@@ -29,14 +31,35 @@ public class ReceptionistController {
 
         switch (state) {
             case USERNAME:
+                model.setUsername(input);
+                state = PASSWORD;
+                model.getViewList().add("Write password: ");
+                break;
 
             case PASSWORD:
 
+                model.setPassword(input);
+                model.update(login);
+                if (model.getUser() == null) {
+                    state = START;
+                }
+                else {
+                    model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
+                    model.getWorkouts().values().forEach((workout) -> { 
+                        model.getViewList().add(workout.toString());
+                    });
+                    state = CHOOSEWORKOUT;
+                    break;
+                }
+               break;
+                
+            case CHOOSEWORKOUT:
+                model.getViewList().add("Which workout would you like to add to? ");
                 break;
+                
+                
             default:
                 model.getViewList().add("Write username: ");
-                
-
                 state = USERNAME;
         }
 

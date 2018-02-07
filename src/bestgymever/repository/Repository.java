@@ -3,6 +3,8 @@ package bestgymever.repository;
 import bestgymever.models.*;
 import java.sql.*;
 import static java.sql.ResultSet.*;
+import java.time.*;
+import java.time.format.*;
 
 public class Repository {
 
@@ -10,6 +12,7 @@ public class Repository {
     String query;
     ResultSet rs;
     String returnStatement;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     public Repository() {
         this.pr = new PropertiesReader();
@@ -215,7 +218,6 @@ public class Repository {
 
             while (rs.next()) {
                 if (!model.getWorkouts().containsKey(rs.getInt("Workout_ID"))) {
-
                     if (!model.getWorkoutRooms().containsKey(rs.getInt("WorkoutRoom_ID"))) {
                         model.getWorkoutRooms().put(rs.getInt("WorkoutRoom_ID"), new WorkoutRoom(rs.getInt("WorkoutRoom_ID"), rs.getString("WorkoutRoom_Name")));
                     } else {
@@ -235,16 +237,14 @@ public class Repository {
                     model.getWorkouts().put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
                             model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")),
                             rs.getInt("AvailableSlots"),
-                            rs.getDate("StartDate"),
-                            rs.getDate("EndDate"),
+                            LocalDateTime.parse(String.valueOf(rs.getDate("StartDate")) + "T" + 
+                            String.valueOf(rs.getTime("StartDate"))),
+                            LocalDateTime.parse(String.valueOf(rs.getDate("EndDate")) + "T" + 
+                            String.valueOf(rs.getTime("EndDate"))),
                             model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")),
                             model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID"))));
-
-                    model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
-                    model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
-                    model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                 } else {
-                    model.getWorkouts().get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                    model.getWorkouts().get(rs.getInt("Workout_ID")).setAvailableSlots(rs.getInt("AvailableSlots"));
                 }
             }
         } catch (SQLException ex) {
@@ -314,8 +314,10 @@ public class Repository {
                         model.getWorkouts().put(rs.getInt("Workout_ID"), new Workout(rs.getInt("Workout_ID"),
                                 model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")),
                                 rs.getInt("AvailableSlots"),
-                                rs.getDate("StartDate"),
-                                rs.getDate("EndDate"),
+                                LocalDateTime.parse(String.valueOf(rs.getDate("StartDate")) + "T" + 
+                                String.valueOf(rs.getTime("StartDate"))),
+                                LocalDateTime.parse(String.valueOf(rs.getDate("EndDate")) + "T" +
+                                String.valueOf(rs.getTime("EndDate"))),
                                 model.getWorkoutRooms().get(rs.getInt("WorkoutRoom_ID")),
                                 model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID"))));
 
@@ -323,10 +325,10 @@ public class Repository {
                         model.getWorkoutTypes().get(rs.getInt("WorkoutType_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                         model.getPersonalTrainers().get(rs.getInt("PersonalTrainer_ID")).addWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                     } else {
-                        model.getWorkouts().get(rs.getInt("Workout_ID")).setAvalibleSlots(rs.getInt("AvailableSlots"));
+                        model.getWorkouts().get(rs.getInt("Workout_ID")).setAvailableSlots(rs.getInt("AvailableSlots"));
                     }
+                    model.getBookings().get(rs.getInt("Booking_ID")).setWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
                 }
-                model.getBookings().get(rs.getInt("Booking_ID")).setWorkout(model.getWorkouts().get(rs.getInt("Workout_ID")));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -362,7 +364,7 @@ public class Repository {
         return model;
     }
 
-    public String addMember(String inName, String inUsername, String inPassword) {
+    public SuperModel addMember(SuperModel model, String inName, String inUsername, String inPassword) {
         query = "call add_Member(?,?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
@@ -373,15 +375,15 @@ public class Repository {
             stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
 
-            returnStatement = stmt.getString(4);
+            model.setReturnStatement(stmt.getString(4));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 
-    public String addPersonalTrainer(String inName, String inUsername, String inPassword) {
+    public SuperModel addPersonalTrainer(SuperModel model, String inName, String inUsername, String inPassword) {
         query = "call add_PersonlTrainer(?,?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
@@ -392,16 +394,16 @@ public class Repository {
             stmt.registerOutParameter(4, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
 
-            returnStatement = stmt.getString(4);
+            model.setReturnStatement(stmt.getString(4));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 
-    public String addReceptionist(String inUsername, String inPassword) {
-        query = "call add_Receptionist(?,?,?)";
+    public SuperModel addReceptionist(SuperModel model, String inName, String inUsername, String inPassword) {
+        query = "call add_Receptionist(?,?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
@@ -410,51 +412,51 @@ public class Repository {
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
 
-            returnStatement = stmt.getString(4);
+            model.setReturnStatement(stmt.getString(4));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 
-    public String addNote(String inMember_ID, String inNote) {
+    public SuperModel addNote(SuperModel model, String note) {
         query = "call add_Note(?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
-            stmt.setString(1, inMember_ID);
-            stmt.setString(2, inNote);
+            stmt.setString(1, String.valueOf(model.getUser().getId()));
+            stmt.setString(2, note);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
-
-            returnStatement = stmt.getString(3);
+            model.setReturnStatement(stmt.getString(3));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 
-    public String cancelBooking(String inMemberID, String inBookingID) {
+    public SuperModel cancelBooking(SuperModel model, String booking) {
         query = "call cancelBooking(?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
-            stmt.setString(1, inMemberID);
-            stmt.setString(2, inBookingID);
+            stmt.setString(1, String.valueOf(model.getUser().getId()));
+            stmt.setString(2, booking);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
-
-            returnStatement = stmt.getString(3);
+            
+            model.setReturnStatement(stmt.getString(3));
+            model.getBookings().remove(model.getTempBookings().get(Integer.parseInt(booking)).getId());
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 
-    public String createBooking(String inMemberID, String inWorkoutID) {
+    public SuperModel createBooking(SuperModel model, String inMemberID, String inWorkoutID) {
         query = "call BestGymEver.createBooking(?,?,?)";
 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
@@ -465,15 +467,15 @@ public class Repository {
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             stmt.executeUpdate();
             
-            returnStatement = stmt.getString(3);
+            model.setReturnStatement(stmt.getString(3));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 
-    public String createWorkout(String inStartDate, String inEndDate,
+    public SuperModel createWorkout(SuperModel model, String inStartDate, String inEndDate,
             String inAvailableSlots, String inWorkoutRoom,
             String inWorkoutType, String inPersonalTrainer) {
         query = "call createWorkout(?,?,?,?,?,?,?)";
@@ -489,11 +491,11 @@ public class Repository {
             stmt.registerOutParameter(7, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
 
-            returnStatement = stmt.getString(7);
+            model.setReturnStatement(stmt.getString(7));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }
-        return returnStatement;
+        return model;
     }
 }

@@ -1,6 +1,6 @@
 package bestgymever.models;
 
-public class Booking {
+public class Booking implements IModel {
 
     private final int id;
     private boolean checkedIn;
@@ -35,5 +35,10 @@ public class Booking {
 
     public void setCheckedIn(boolean checkedIn) {
         this.checkedIn = checkedIn;
+    }
+    
+    @Override
+    public String toString(){
+        return String.valueOf(checkedIn);
     }
 }

@@ -2,7 +2,7 @@ package bestgymever.models;
 
 import java.util.*;
 
-public class WorkoutType {
+public class WorkoutType implements IModel {
 
     private final int id;
     private String name;
@@ -36,5 +36,10 @@ public class WorkoutType {
 
     public void removeWorkout(Workout workout) {
         workouts.remove(workout.getId());
+    }
+    
+    @Override
+    public String toString(){
+        return String.valueOf(name);
     }
 }

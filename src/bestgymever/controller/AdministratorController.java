@@ -13,9 +13,9 @@ public class AdministratorController implements IController {
     AdministratorState state;
 
     FunInt logIn = (m) -> repository.AdministratorlogIn(m, model.getUsername(), model.getPassword());
-    FunInt createMember = (m) -> repository.addMember(model.getName(), model.getUsername(), model.getPassword());
-    FunInt createReceptionist = (m) -> repository.addReceptionist(inName, inUsername, inPassword);
-    FunInt createPersonalTrainer = (m) -> repository.addPersonalTrainer(inName, inUsername, inPassword);
+    FunInt createMember = (m) -> repository.addMember(m, model.getName(), model.getUsername(), model.getPassword());
+    FunInt createReceptionist = (m) -> repository.addReceptionist(m, model.getName(), model.getUsername(), model.getPassword());
+    FunInt createPersonalTrainer = (m) -> repository.addPersonalTrainer(m, model.getName(), model.getUsername(), model.getPassword());
     FunInt f1 = (m) -> repository.getMembers(m, "");
     FunInt f2 = (m) -> repository.mapNotesToMembers(m, "");
     FunInt f3 = (m) -> repository.mapBookingsToMembers(m, "");
@@ -55,24 +55,19 @@ public class AdministratorController implements IController {
             case MENU:
                 switch (input) {
                     case "1":
-                        
-                        
+
                         break;
                     case "2":
-                        
-                        
+
                         break;
                     case "3":
-                        
-                        
+
                         break;
                     case "4":
-                        
-                        
+
                         break;
                     case "5":
-                        
-                        
+
                         break;
                     case "6":
                         state = USERNAME;
@@ -81,7 +76,7 @@ public class AdministratorController implements IController {
                 }
                 break;
             default:
-                state=USERNAME;
+                state = USERNAME;
                 model.getViewList().add("Username");
         }
         updateView();
@@ -91,7 +86,7 @@ public class AdministratorController implements IController {
     public void updateView() {
         updateModel(view.display(model.getViewList()));
     }
-    
+
     private void AddMenyOptions() {
         model.getViewList().add("");
         model.getViewList().add("What do you wan't to do?");
