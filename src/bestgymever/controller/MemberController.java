@@ -4,7 +4,7 @@ import static bestgymever.controller.MemberState.*;
 import bestgymever.models.*;
 import bestgymever.repository.*;
 import bestgymever.view.*;
-import java.util.*;
+import java.time.*;
 
 public class MemberController implements IController {
 
@@ -19,6 +19,7 @@ public class MemberController implements IController {
     private final FunInt getMyBookings = (m) -> repository.mapBookingsToMembers(m, String.valueOf(m.getUser().getId()));
     private final FunInt getMyWorkouts = (m) -> repository.mapWorkoutsToBookings(m, "");
     private final FunInt getWorkouts = (m) -> repository.getWorkouts(m, "");
+    private final FunInt RemoveBooking = (m) -> repository.cancelBooking(m, String.valueOf(Integer.parseInt(input) - 1));
 
     public MemberController(SuperModel model, ConsoleView view, Repository repository) {
         this.model = model;
@@ -55,25 +56,31 @@ public class MemberController implements IController {
                     case "1":
                         model.update(getWorkouts);
                         model.getWorkouts().forEach((t, working) -> {
-                            if(working.getStarDate().after(new Date())){
+                            if (working.getStartDate().isAfter(LocalDateTime.now())) {
                                 model.getTempWorkouts().add(working);
-                                model.getViewList().add("["+ model.getTempWorkouts().size() +"] Type of workout: " + working.getWorkoutType().getName() + ", room: " + working.getWorkoutRoom().getName() + ", pt: " + working.getPersonalTrainer().getName() + ", start time: " + working.getStarDate() + ", end time: " + working.getEndDate());
-                                model.getViewList().add("Choose workout to book or write exit to get to menu");
+                                model.getViewList().add("[" + model.getTempWorkouts().size() + "] Type of workout: " + working.getWorkoutType() + ", room: " + working.getWorkoutRoom() + ", pt: " + working.getPersonalTrainer() + ", start time: " + working.getStartDate().toString().replace("T", " ") + ", end time: " + working.getEndDate().toString().replace("T", " "));
                             }
                         });
+                        model.getViewList().add("Choose workout to book or write exit to get to menu");
                         state = BOOKING;
                         break;
                     case "2":
                         model.update(getMyBookings);
                         model.update(getMyWorkouts);
                         model.getBookings().forEach((t, booking) -> {
-                           if(booking.getWorkout().getStarDate().after(new Date())){
-                               model.getTempBookings().add(booking);
-                               model.getViewList().add("["+ model.getTempBookings().size() +"] Type of workout: " + booking.getWorkout().getWorkoutType().getName() + ", room: " + booking.getWorkout().getWorkoutRoom().getName() + ", pt: " + booking.getWorkout().getPersonalTrainer().getName() + ", start time: " + booking.getWorkout().getStarDate() + ", end time: " + booking.getWorkout().getEndDate());
-                         }
-                         model.getViewList().add("Choose workout to book or exit to menu");
+                            if (booking.getWorkout().getStartDate().isAfter(LocalDateTime.now())) {
+                                model.getTempBookings().add(booking);
+                                model.getViewList().add("[" + model.getTempBookings().size() + "] Type of workout: " + booking.getWorkout().getWorkoutType() + ", room: " + booking.getWorkout().getWorkoutRoom() + ", pt: " + booking.getWorkout().getPersonalTrainer() + ", start time: " + booking.getWorkout().getStartDate().toString().replace("T", " ") + ", end time: " + booking.getWorkout().getEndDate().toString().replace("T", " "));
+                            }
                         });
-                        state = BOOKINGS;
+                        if (model.getTempBookings().size() == 0) {
+                            model.getViewList().add("You have no bookings");
+                            AddMenyOptions();
+                            state = OPTION;
+                        } else {
+                            model.getViewList().add("Choose workout to cancel or exit to menu");
+                            state = BOOKINGS;
+                        }
                         break;
                     case "3":
                         state = USERNAME;
@@ -81,12 +88,24 @@ public class MemberController implements IController {
                         break;
                 }
                 break;
-                
+
             case BOOKING:
-                
+
                 break;
             case BOOKINGS:
-                        
+                switch (input) {
+                    case "exit":
+                        AddMenyOptions();
+                        state = OPTION;
+                        break;
+                    default:
+                        model.update(RemoveBooking);
+                        model.getViewList().add("");
+                        AddMenyOptions();
+                        state = OPTION;
+                        break;
+                }
+                model.getTempBookings().clear();
                 break;
             default:
                 state = USERNAME;

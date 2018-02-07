@@ -6,7 +6,7 @@ import java.util.*;
 public class SuperModel {
 
     private IPerson user;
-    private String username, password;
+    private String username, password, returnStatement;
     private final List<Workout> tempWorkouts;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
@@ -98,5 +98,13 @@ public class SuperModel {
 
     public List<Workout> getTempWorkouts() {
         return tempWorkouts;
+    }
+
+    public String getReturnStatement() {
+        return returnStatement;
+    }
+
+    public void setReturnStatement(String returnStatement) {
+        this.returnStatement = returnStatement;
     }
 }
