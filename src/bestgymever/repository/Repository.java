@@ -444,7 +444,7 @@ public class Repository {
                 CallableStatement stmt = con.prepareCall(query)) {
 
             stmt.setString(1, String.valueOf(model.getUser().getId()));
-            stmt.setString(2, booking);
+            stmt.setString(2, String.valueOf(model.getTempBookings().get(Integer.parseInt(booking)).getId()));
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
             
@@ -457,14 +457,14 @@ public class Repository {
         return model;
     }
 
-    public SuperModel createBooking(SuperModel model, String inMemberID, String inWorkoutID) {
+    public SuperModel createBooking(SuperModel model, String inWorkoutID) {
         query = "call BestGymEver.createBooking(?,?,?)";
 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             
-            stmt.setString(1, inMemberID);
-            stmt.setString(2, inWorkoutID);
+            stmt.setString(1, String.valueOf(model.getUser().getId()));
+            stmt.setString(2, String.valueOf(model.getTempWorkouts().get(Integer.parseInt(inWorkoutID)).getId()));
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             stmt.executeUpdate();
             

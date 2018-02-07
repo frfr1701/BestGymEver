@@ -19,7 +19,8 @@ public class MemberController implements IController {
     private final FunInt getMyBookings = (m) -> repository.mapBookingsToMembers(m, String.valueOf(m.getUser().getId()));
     private final FunInt getMyWorkouts = (m) -> repository.mapWorkoutsToBookings(m, "");
     private final FunInt getWorkouts = (m) -> repository.getWorkouts(m, "");
-    private final FunInt RemoveBooking = (m) -> repository.cancelBooking(m, String.valueOf(Integer.parseInt(input) - 1));
+    private final FunInt CreateBooking = (m) -> repository.createBooking(m, input);
+    private final FunInt CancelBooking = (m) -> repository.cancelBooking(m, String.valueOf(Integer.parseInt(input) - 1));
 
     public MemberController(SuperModel model, ConsoleView view, Repository repository) {
         this.model = model;
@@ -78,7 +79,7 @@ public class MemberController implements IController {
                             AddMenyOptions();
                             state = OPTION;
                         } else {
-                            model.getViewList().add("Choose workout to cancel or exit to menu");
+                            model.getViewList().add("Choose workout to cancel or write exit to get to menu");
                             state = BOOKINGS;
                         }
                         break;
@@ -90,7 +91,19 @@ public class MemberController implements IController {
                 break;
 
             case BOOKING:
-
+                switch (input) {
+                    case "exit":
+                        AddMenyOptions();
+                        state = OPTION;
+                        break;
+                    default:
+                        model.update(CreateBooking);
+                        model.getViewList().add(model.getReturnStatement());
+                        AddMenyOptions();
+                        state = OPTION;
+                        break;
+                }
+                model.getTempWorkouts().clear();
                 break;
             case BOOKINGS:
                 switch (input) {
@@ -99,8 +112,8 @@ public class MemberController implements IController {
                         state = OPTION;
                         break;
                     default:
-                        model.update(RemoveBooking);
-                        model.getViewList().add("");
+                        model.update(CancelBooking);
+                        model.getViewList().add(model.getReturnStatement());
                         AddMenyOptions();
                         state = OPTION;
                         break;
