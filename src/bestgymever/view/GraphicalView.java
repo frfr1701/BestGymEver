@@ -10,10 +10,10 @@ import javax.swing.*;
 public class GraphicalView extends JFrame implements Runnable {
 
     JLabel title;
-    JPanel topSpace;
-    JPanel botSpace;
-    JPanel leftSpace;
-    JPanel rightSpace;
+    JPanel topPadding;
+    JPanel bottomtPadding;
+    JPanel leftPadding;
+    JPanel rightPadding;
     List<JPanel> paddings;
 
     List<String> viewList;
@@ -28,11 +28,11 @@ public class GraphicalView extends JFrame implements Runnable {
     DropDownPanel dropDownPanel;
 
     public GraphicalView() {
-        this.topSpace = new JPanel();
-        this.botSpace = new JPanel();
-        this.leftSpace = new JPanel();
-        this.rightSpace = new JPanel();
-        this.paddings = Arrays.asList(topSpace, botSpace, leftSpace, rightSpace);
+        this.topPadding = new JPanel();
+        this.bottomtPadding = new JPanel();
+        this.leftPadding = new JPanel();
+        this.rightPadding = new JPanel();
+        this.paddings = Arrays.asList(topPadding, bottomtPadding, leftPadding, rightPadding);
         this.title = new JLabel();
         al = (ActionEvent a) -> {
             if (a.getSource() == textFieldPanel.getSubmit()) {
@@ -52,7 +52,7 @@ public class GraphicalView extends JFrame implements Runnable {
 
     public void setupFrame() {
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(800, 500));
+        setPreferredSize(new Dimension(900, 500));
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -63,11 +63,11 @@ public class GraphicalView extends JFrame implements Runnable {
         paddings.forEach((s) -> {
             s.setPreferredSize(new Dimension(50, 60));
         });
-        topSpace.add(title);
-        add(topSpace, NORTH);
-        add(botSpace, SOUTH);
-        add(leftSpace, WEST);
-        add(rightSpace, EAST);
+        topPadding.add(title);
+        add(topPadding, NORTH);
+        add(bottomtPadding, SOUTH);
+        add(leftPadding, WEST);
+        add(rightPadding, EAST);
         add(CurrentPanel);
         pack();
 
