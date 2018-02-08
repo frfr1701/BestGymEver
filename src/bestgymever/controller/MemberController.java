@@ -73,7 +73,7 @@ public class MemberController implements IController {
                             model.getBookings().forEach((t, booking) -> {
                                 if (booking.getWorkout().getStartDate().isAfter(LocalDateTime.now())) {
                                     model.getTempBookings().add(booking);
-                                    model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().forMemberToString());
+                                    model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().BookingsAccessToString());
                                 }
                             });
                             if (model.getTempBookings().size() == 0) {

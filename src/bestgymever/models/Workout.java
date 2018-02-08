@@ -76,7 +76,7 @@ public class Workout implements IModel {
         
     }
     
-    public String forMemberToString(){
+    public String BookingsAccessToString(){
         return "Type of workout: " + workoutType + ", room: " + workoutRoom + ", pt: " + 
                 personalTrainer + ", date: " + startDate.toString().replace("T", " time: ") + 
                 " - " + endDate.toString().substring(endDate.toString().indexOf("T") + 1);
