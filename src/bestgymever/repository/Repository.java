@@ -10,6 +10,7 @@ public class Repository {
 
     PropertiesReader pr;
     String query;
+    int changedRows;
     ResultSet rs;
     String returnStatement;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -419,12 +420,12 @@ public class Repository {
         return model;
     }
 
-    public SuperModel addNote(SuperModel model, String note) {
+    public SuperModel addNote(SuperModel model, String inMemberID, String note) {
         query = "call add_Note(?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
-            stmt.setString(1, String.valueOf(model.getUser().getId()));
+            stmt.setString(1, inMemberID);
             stmt.setString(2, note);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
@@ -460,7 +461,7 @@ public class Repository {
 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
-            
+
             stmt.setString(1, inMemberID);
             stmt.setString(2, inWorkoutID);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
@@ -478,7 +479,7 @@ public class Repository {
             String inAvailableSlots, String inWorkoutRoom,
             String inWorkoutType, String inPersonalTrainer) {
         query = "call createWorkout(?,?,?,?,?,?,?)";
-        
+
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             stmt.setString(1, inStartDate);
@@ -488,9 +489,30 @@ public class Repository {
             stmt.setString(5, inWorkoutType);
             stmt.setString(6, inPersonalTrainer);
             stmt.registerOutParameter(7, java.sql.Types.VARCHAR);
-            
+
             rs = stmt.executeQuery();
             model.setReturnStatement(stmt.getString(7));
+        } catch (SQLException ex) {
+            System.out.println(ex.getCause());
+        }
+        return model;
+    }
+
+    public SuperModel checkInMember(SuperModel model, String bookingID) {
+        query = "UPDATE BestGymEver.Booking SET CheckedIn = 1  WHERE ID = ?";
+        try (Connection con = DriverManager.getConnection(pr.getConnectionString());
+            PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setString(1, bookingID);
+            changedRows = stmt.executeUpdate();
+            if (changedRows == 0) {
+                model.setReturnStatement("There was no booking.");
+            }
+            if (changedRows > 1) {
+                model.setReturnStatement("how the fuck are there more bookings with the same id.");
+            } else {
+                model.setReturnStatement("Member checked in.");
+            }
+
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
         }

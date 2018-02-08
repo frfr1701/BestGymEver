@@ -10,5 +10,5 @@ package bestgymever.controller;
  * @author Senad Hasic
  */
 public enum ReceptionistState {
-      START, USERNAME, PASSWORD, CHOOSEWORKOUT;
+      START, USERNAME, PASSWORD, CHOOSEMEMBER, CHOOSEBOOKING, MENU, MEMBERCHECKEDIN;
 }

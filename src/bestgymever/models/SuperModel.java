@@ -6,7 +6,8 @@ import java.util.*;
 public class SuperModel {
 
     private IPerson user;
-    private String username, password, returnStatement, name;
+    private String username, password, returnStatement, name, bookingID;
+    private int tempMemberID;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
@@ -21,6 +22,8 @@ public class SuperModel {
     private final List<WorkoutRoom> tempWorkoutRooms;
     private final List<WorkoutType> tempWorkoutTypes;
     private final List<String> tempWorkoutInput;
+    private final List<Member> tempMembers; 
+    private final List<Note> tempNotes;
 
     public SuperModel() {
         this.bookings = new HashMap<>();
@@ -30,6 +33,8 @@ public class SuperModel {
         this.tempWorkoutRooms = new ArrayList<>();
         this.tempWorkoutTypes = new ArrayList<>();
         this.tempWorkoutInput = new ArrayList<>();
+        this.tempMembers = new ArrayList<>();
+        this.tempNotes = new ArrayList<>();
 
         this.members = new HashMap<>();
         this.personalTrainers = new HashMap<>();
@@ -96,6 +101,15 @@ public class SuperModel {
         this.password = password;
     }
 
+    public String getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
+    }
+    
+
     public IPerson getUser() {
         return user;
     }
@@ -131,6 +145,14 @@ public class SuperModel {
     public List<String> getTempWorkoutInput() {
         return tempWorkoutInput;
     }
+    
+    public List<Member> getTempMembers() {
+        return tempMembers;
+    }
+    
+    public List<Note> getTempNotes() {
+        return tempNotes;
+    }
 
     public String getReturnStatement() {
         return returnStatement;
@@ -140,6 +162,15 @@ public class SuperModel {
         this.returnStatement = returnStatement;
     }
 
+    public int getTempMemberID() {
+        return tempMemberID;
+    }
+
+    public void setTempMemberID(int tempMemberID) {
+        this.tempMemberID = tempMemberID;
+    }
+    
+    
     public void clearUser() {
         getMembers().remove(user.getId());
         user=null;

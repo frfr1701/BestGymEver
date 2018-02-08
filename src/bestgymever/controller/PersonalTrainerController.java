@@ -4,117 +4,180 @@ import static bestgymever.controller.PersonalTrainerState.*;
 import bestgymever.models.*;
 import bestgymever.repository.*;
 import bestgymever.view.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PersonalTrainerController implements IController {
-    
-    private final SuperModel model;
-    private final ConsoleView view; 
-    private Repository repository;
-    private PersonalTrainerState state; 
-   
-    private final FunInt logIn = (m) -> repository.PersonalTrainerlogIn(m,m.getUsername(),m.getPassword());
-    private final FunInt f1 = (m) -> repository.getPersonalTrainers(m, "");
-    private final FunInt f2 = (m) -> repository.getMembers(m,""); 
-    private final FunInt f3 = (m) -> repository.mapNotesToMembers(m, ""); 
-    private final FunInt f4 = (m) -> repository.mapBookingsToMembers(m, ""); 
-    // FunInt f5 = (m) -> repository.addNote("", ""); 
+
+    SuperModel model;
+    ConsoleView view;
+    Repository repository;
+    PersonalTrainerState state;
+    String input;
+
+    private final FunInt logIn = (m) -> repository.PersonalTrainerlogIn(m, m.getUsername(), m.getPassword());
+
+    private final FunInt loadMembers = (m) -> repository.getMembers(m, "");
+    private final FunInt mapNotesToMembers = (m) -> repository.mapNotesToMembers(m, "");
+    private final FunInt mapBookingsToMembers = (m) -> repository.mapBookingsToMembers(m, "");
+    private final FunInt mapWorkoutsToBookings = (m) -> repository.mapWorkoutsToBookings(m, "");
+    private final FunInt addNote = (m) -> repository.addNote(m, String.valueOf(m.getTempMemberID()), input);
 
     public PersonalTrainerController(SuperModel model, ConsoleView view, Repository repository) {
-        
-        this.state = START; 
+
+        this.state = START;
         this.model = model;
         this.view = view;
         this.repository = repository;
     }
-    
+
     @Override
-    public void updateModel(String input) { 
+    public void updateModel(String input) {
+        this.input = input;
         model.getViewList().clear();
-        switch(state){
+        switch (state) {
             case USERNAME:
                 model.setUsername(input);
                 model.getViewList().add("Password");
-                state=PASSWORD;
+                state = PASSWORD;
                 break;
-                
+
             case PASSWORD:
                 model.setPassword(input);
                 model.update(logIn);
-                if(model.getUser()==null){
+                if (model.getUser() == null) {
                     model.getViewList().add("Wrong Username/Password");
                     state = USERNAME;
                     model.getViewList().add("Username");
-                }else{
-                    model.getViewList().add("Welcome " + model.getPersonalTrainers().get(model.getUser().getId()).getName());
+                } else {
+                    model.getViewList().add("Logged in as " + model.getPersonalTrainers().get(model.getUser().getId()).getName());
                     AddMenyOptions();
-                    state = OPTION;
+                    state = MENU;
                 }
                 break;
-                
-            case OPTION:
-                switch(input){
+
+            case MENU:
+                switch (input) {
                     case "1":
-                        int i = 1; 
-                        model.update(f2);
-                        model.getMembers().values().forEach((member) -> {
-                                model.getViewList().add(member.getName());
-                                
-                        });
-                        state = CHOOSEMEMBERWORKOUT;
+                        chooseMember();
+                        state = SHOWMEMBERWORKOUT;
                         break;
                     case "2":
-                    state = CHOOSEMEMBERNOTE;
-                        model.update(f2);
+                        chooseMember();
+                        state = SHOWMEMBERNOTE;
                         break;
                     case "3":
-                    state = ADDMEMBERNOTE;
+                        chooseMember();
+                        state = GETMEMBERFORADDNOTE;
                         break;
                     case "4":
-                    state = USERNAME;
-                    model.getViewList().add("Username");
-                    break;
+                        state = USERNAME;
+                        model.getViewList().add("Username");
+                        break;
                 }
-                break; 
-            
-            case CHOOSEMEMBERWORKOUT:
-                
+                break;
+
+            case SHOWMEMBERWORKOUT:
+                if (checkForExit(input)) break;
+                model.update(loadMembers.andThen(mapBookingsToMembers).andThen(mapWorkoutsToBookings));
+
                 model.getMembers().values().forEach((member) -> {
-                    member.getBookings().values().stream()
-                            .filter(booking -> booking.isCheckedIn() 
-                                    && booking.getWorkout().getEndDate().before(new Date()))
-                            .map(Booking::getWorkout)
-                            .forEach((t) -> {
-                                model.getViewList().add(t.toString());
-                            });
-            });
-                
-                break; 
-                
-            case CHOOSEMEMBERNOTE:
+                    if (member.getId() == model.getTempMembers().get(Integer.parseInt(input) - 1).getId()) {
+                        member.getBookings().values().stream()
+                                .filter(booking -> booking.isCheckedIn() && booking.getWorkout().getEndDate().isBefore(LocalDateTime.now()))
+                                .forEach((t) -> {
+                                    model.getViewList().add(t.getWorkout().BookingsAccessToString());
+                                    model.getTempWorkouts().add(t.getWorkout());
+                                });
+                    }
+                });
+                if (model.getTempWorkouts().isEmpty()) {
+                    model.getViewList().add("Member has not participated in any workouts");
+                }
+
+                model.getViewList().add("Write exit to return to menu");
+                state = RETURNTOMENUOPTION;
+                break;
+
+            case SHOWMEMBERNOTE:
+                if (checkForExit(input)) break;
+                model.update(loadMembers.andThen(mapNotesToMembers));
+
                 model.getMembers().values().forEach((member) -> {
-                    member.getNotes().values().stream()
-                            .filter(note -> note.getNote().equalsIgnoreCase(member.getName()))
-                            .forEach((t) -> {
-                                model.getViewList().add(t.toString());
-                            });
-                    
-            });
+                    if (member.getId() == model.getTempMembers().get(Integer.parseInt(input) - 1).getId()) {
+                        member.getNotes().forEach((t, note) -> {
+                            model.getViewList().add(note.toString());
+                            model.getTempNotes().add(note);
+                        });
+                    }
+                });
+                if (model.getTempNotes().isEmpty()) {
+                    model.getViewList().add("Member has no notes");
+                }
+
+                model.getViewList().add("Write exit to return to menu");
+                state = RETURNTOMENUOPTION;
+                break;
+
+            case GETMEMBERFORADDNOTE:
+                if (checkForExit(input)) break;
+
+                model.getMembers().values().forEach((member) -> {
+                    if (member.getId() == model.getTempMembers().get(Integer.parseInt(input) - 1).getId()) {
+                        model.setTempMemberID(model.getTempMembers().get(Integer.parseInt(input) - 1).getId());
+                    }
+                });
                 
-                
-                break; 
-                
-            case ADDMEMBERNOTE:
+                model.getViewList().add("Write note on " + model.getTempMembers().get(Integer.parseInt(input) - 1).toString() + " or exit");
+                state = ADDMEMBERNOTE;
                 
                 break;
-            default:    
-                state=USERNAME;
+
+            case ADDMEMBERNOTE:
+                if (checkForExit(input)) break;
+                model.update(addNote);
+                model.getViewList().add(model.getReturnStatement());
+                AddMenyOptions();
+                state = MENU;
+                break;
+
+            case RETURNTOMENUOPTION:
+                if (input.equalsIgnoreCase("exit")) {
+                    AddMenyOptions();
+                    state = MENU;
+                }
+                break;
+
+            default:
+                state = USERNAME;
                 model.getViewList().add("Username");
                 break;
         }
-        updateView(); 
+        updateView();
     }
-    
+
+    private boolean checkForExit(String input1) {
+        if (input1.equalsIgnoreCase("exit")) {
+            AddMenyOptions();
+            state = MENU;
+            return true;
+        }
+        return false;
+    }
+
+    private void chooseMember() {
+        model.update(loadMembers);
+        
+        model.getTempMembers().clear();
+        model.getTempWorkouts().clear();
+        model.getTempBookings().clear();
+        
+        model.getViewList().add("Choose Member or exit");
+        model.getMembers().values().forEach((member) -> {
+            model.getTempMembers().add(member);
+            model.getViewList().add("[" + model.getTempMembers().size() + "]" + member.toString());
+        });
+    }
+
     private void AddMenyOptions() {
         model.getViewList().add("");
         model.getViewList().add("What do you wan't to do?");
@@ -123,10 +186,10 @@ public class PersonalTrainerController implements IController {
         model.getViewList().add("[3] Add member note");
         model.getViewList().add("[4] Log out");
     }
-    
+
     @Override
     public void updateView() {
         updateModel(view.display(model.getViewList()));
     }
-    
+
 }
