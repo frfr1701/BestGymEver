@@ -5,7 +5,6 @@ import bestgymever.models.*;
 import bestgymever.repository.*;
 import bestgymever.view.*;
 import java.util.Date;
-import java.util.Scanner;
 
 public class PersonalTrainerController implements IController {
     

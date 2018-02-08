@@ -2,7 +2,6 @@ package bestgymever.models;
 
 import bestgymever.controller.*;
 import java.util.*;
-import javax.swing.text.html.parser.*;
 
 public class SuperModel {
 
