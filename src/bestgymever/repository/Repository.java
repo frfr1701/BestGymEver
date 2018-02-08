@@ -108,7 +108,6 @@ public class Repository {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println("hello");
             System.out.println(ex.getCause());
         }
         return model;
@@ -437,18 +436,18 @@ public class Repository {
         return model;
     }
 
-    public SuperModel cancelBooking(SuperModel model, String booking) {
+    public SuperModel cancelBooking(SuperModel model, String inMemberID, String inBookingID) {
         query = "call cancelBooking(?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
-            stmt.setString(1, String.valueOf(model.getUser().getId()));
-            stmt.setString(2, String.valueOf(model.getBookings().get(Integer.parseInt(booking)).getId()));
+            stmt.setString(1, inMemberID);
+            stmt.setString(2, inBookingID);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
 
             model.setReturnStatement(stmt.getString(3));
-            model.getBookings().remove(model.getBookings().get(Integer.parseInt(booking)).getId());
+            model.getBookings().remove(Integer.parseInt(inBookingID));
 
         } catch (SQLException ex) {
             System.out.println(ex.getCause());
@@ -456,14 +455,14 @@ public class Repository {
         return model;
     }
 
-    public SuperModel createBooking(SuperModel model, String inWorkoutID) {
+    public SuperModel createBooking(SuperModel model, String inMemberID, String inWorkoutID) {
         query = "call BestGymEver.createBooking(?,?,?)";
 
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
             
-            stmt.setString(1, String.valueOf(model.getUser().getId()));
-            stmt.setString(2, String.valueOf(model.getTempWorkouts().get(Integer.parseInt(inWorkoutID)).getId()));
+            stmt.setString(1, inMemberID);
+            stmt.setString(2, inWorkoutID);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             stmt.executeUpdate();
 
