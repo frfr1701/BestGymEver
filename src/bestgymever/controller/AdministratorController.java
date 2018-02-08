@@ -99,7 +99,6 @@ public class AdministratorController implements IController {
                             break;
                     }
                     break;
-//--------------------------------Workout---------------------------------------
                 case CHOOSETYPE:
                     model.getTempWorkoutInput().add(String.valueOf(model.getTempPersonalTrainers().get(Integer.parseInt(input) - 1).getId()));
                     

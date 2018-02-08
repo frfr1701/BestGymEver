@@ -11,12 +11,11 @@ public class ReceptionistController {
     ConsoleView view;
     Repository repository;
     ReceptionistState state;
-    
+
     FunInt getmembers = (m) -> repository.getMembers(m, "");
     FunInt getbookingsformembers = (m) -> repository.mapBookingsToMembers(m, "");
-    FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
+    // FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
     FunInt login = (m) -> repository.ReceptionistlogIn(m, model.getUsername(), model.getPassword());
-   
 
     public ReceptionistController(SuperModel model, ConsoleView view, Repository repository) {
 
@@ -42,22 +41,27 @@ public class ReceptionistController {
                 model.update(login);
                 if (model.getUser() == null) {
                     state = START;
-                }
-                else {
-                    model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
-                    model.getWorkouts().values().forEach((workout) -> { 
-                        model.getViewList().add(workout.toString());
+                } else {
+                    model.update(getmembers.andThen(getbookingsformembers));
+                    model.getMembers().values().forEach((member) -> {
+                        System.out.println("hello");
+                        member.getBookings().values()
+                                .forEach((booking) -> {
+                                    if (!booking.isCheckedIn()) {
+                                        System.out.println(booking.getWorkout());
+                                        model.getViewList().add(booking.getWorkout().toString());
+                                    }
+                                });
                     });
-                    state = CHOOSEWORKOUT;
-                    break;
+                    state = CHOOSEMEMBER;
                 }
-               break;
-                
-            case CHOOSEWORKOUT:
+                break;
+
+            case CHOOSEMEMBER:
                 model.getViewList().add("Which workout would you like to add to? ");
                 break;
-                
-                
+            //
+
             default:
                 model.getViewList().add("Write username: ");
                 state = USERNAME;
