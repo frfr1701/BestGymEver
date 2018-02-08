@@ -19,7 +19,7 @@ public class MemberController implements IController {
     private final FunInt getMyBookings = (m) -> repository.mapBookingsToMembers(m, String.valueOf(m.getUser().getId()));
     private final FunInt getMyWorkouts = (m) -> repository.mapWorkoutsToBookings(m, "");
     private final FunInt getWorkouts = (m) -> repository.getWorkouts(m, "");
-    private final FunInt CreateBooking = (m) -> repository.createBooking(m, input);
+    private final FunInt CreateBooking = (m) -> repository.createBooking(m, String.valueOf(Integer.parseInt(input) - 1));
     private final FunInt CancelBooking = (m) -> repository.cancelBooking(m, String.valueOf(Integer.parseInt(input) - 1));
 
     public MemberController(SuperModel model, ConsoleView view, Repository repository) {
@@ -59,7 +59,7 @@ public class MemberController implements IController {
                         model.getWorkouts().forEach((t, working) -> {
                             if (working.getStartDate().isAfter(LocalDateTime.now())) {
                                 model.getTempWorkouts().add(working);
-                                model.getViewList().add("[" + model.getTempWorkouts().size() + "] Type of workout: " + working.getWorkoutType() + ", room: " + working.getWorkoutRoom() + ", pt: " + working.getPersonalTrainer() + ", start time: " + working.getStartDate().toString().replace("T", " ") + ", end time: " + working.getEndDate().toString().replace("T", " "));
+                                model.getViewList().add("[" + model.getTempWorkouts().size() + "] Type of workout: " + working.getWorkoutType() + ", room: " + working.getWorkoutRoom() + ", pt: " + working.getPersonalTrainer() + ", time: " + working.getStartDate().toString().replace("T", " ") + " - " + working.getEndDate().toString().substring(working.getEndDate().toString().indexOf("T")+1));
                             }
                         });
                         model.getViewList().add("Choose workout to book or write exit to get to menu");
@@ -71,7 +71,7 @@ public class MemberController implements IController {
                         model.getBookings().forEach((t, booking) -> {
                             if (booking.getWorkout().getStartDate().isAfter(LocalDateTime.now())) {
                                 model.getTempBookings().add(booking);
-                                model.getViewList().add("[" + model.getTempBookings().size() + "] Type of workout: " + booking.getWorkout().getWorkoutType() + ", room: " + booking.getWorkout().getWorkoutRoom() + ", pt: " + booking.getWorkout().getPersonalTrainer() + ", start time: " + booking.getWorkout().getStartDate().toString().replace("T", " ") + ", end time: " + booking.getWorkout().getEndDate().toString().replace("T", " "));
+                                model.getViewList().add("[" + model.getTempBookings().size() + "] Type of workout: " + booking.getWorkout().getWorkoutType() + ", room: " + booking.getWorkout().getWorkoutRoom() + ", pt: " + booking.getWorkout().getPersonalTrainer() + ", start time: " + booking.getWorkout().getStartDate().toString().replace("T", " ") + ", end time: " + booking.getWorkout().getEndDate().toString().substring(booking.getWorkout().getEndDate().toString().indexOf("T")+1));
                             }
                         });
                         if (model.getTempBookings().size() == 0) {
@@ -85,6 +85,7 @@ public class MemberController implements IController {
                         break;
                     case "3":
                         state = USERNAME;
+                        model.clearUser();
                         model.getViewList().add("Username");
                         break;
                 }

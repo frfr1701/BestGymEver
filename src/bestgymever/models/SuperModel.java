@@ -2,6 +2,7 @@ package bestgymever.models;
 
 import bestgymever.controller.*;
 import java.util.*;
+import javax.swing.text.html.parser.*;
 
 public class SuperModel {
 
@@ -106,5 +107,17 @@ public class SuperModel {
 
     public void setReturnStatement(String returnStatement) {
         this.returnStatement = returnStatement;
+    }
+
+    public void clearUser() {
+        getMembers().remove(user.getId());
+        user=null;
+        members.clear();
+        personalTrainers.clear();
+        workouts.clear();
+        workoutRooms.clear();
+        workoutTypes.clear();
+        bookings.clear();
+        notes.clear();
     }
 }
