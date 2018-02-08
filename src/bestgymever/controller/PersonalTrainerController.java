@@ -4,22 +4,27 @@ import static bestgymever.controller.PersonalTrainerState.*;
 import bestgymever.models.*;
 import bestgymever.repository.*;
 import bestgymever.view.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Scanner;
 
 public class PersonalTrainerController implements IController {
     
-    private final SuperModel model;
-    private final ConsoleView view; 
-    private Repository repository;
-    private PersonalTrainerState state; 
+    SuperModel model;
+    ConsoleView view; 
+    Repository repository;
+    PersonalTrainerState state; 
    
     private final FunInt logIn = (m) -> repository.PersonalTrainerlogIn(m,m.getUsername(),m.getPassword());
-    private final FunInt f1 = (m) -> repository.getPersonalTrainers(m, "");
-    private final FunInt f2 = (m) -> repository.getMembers(m,""); 
-    private final FunInt f3 = (m) -> repository.mapNotesToMembers(m, ""); 
-    private final FunInt f4 = (m) -> repository.mapBookingsToMembers(m, ""); 
-    // FunInt f5 = (m) -> repository.addNote("", ""); 
+    
+    private final FunInt loadWorkouts = (m) -> repository.getWorkouts(m, "");
+    private final FunInt loadMembers = (m) -> repository.getMembers(m, "");
+    private final FunInt loadPersonalTrainer = (m) -> repository.getPersonalTrainers(m, "");
+    private final FunInt mapNotesToMembers = (m) -> repository.mapNotesToMembers(m, ""); 
+    private final FunInt mapBookingsToMembers = (m) -> repository.mapBookingsToMembers(m, ""); 
+    private final FunInt mapWorkoutsToBookings = (m) -> repository.mapWorkoutsToBookings(m, "");
+    private final FunInt addNote = (m) -> repository.addNote(m, model.getName(),"");
 
     public PersonalTrainerController(SuperModel model, ConsoleView view, Repository repository) {
         
@@ -47,29 +52,49 @@ public class PersonalTrainerController implements IController {
                     state = USERNAME;
                     model.getViewList().add("Username");
                 }else{
-                    model.getViewList().add("Welcome " + model.getPersonalTrainers().get(model.getUser().getId()).getName());
+                    model.getViewList().add("Logged in as " + model.getPersonalTrainers().get(model.getUser().getId()).getName());
                     AddMenyOptions();
-                    state = OPTION;
+                    state = MENU;
                 }
                 break;
                 
-            case OPTION:
+            case MENU:
                 switch(input){
                     case "1":
-                        int i = 1; 
-                        model.update(f2);
-                        model.getMembers().values().forEach((member) -> {
-                                model.getViewList().add(member.getName());
-                                
+                        model.update(loadMembers);
+                        
+                        model.getTempMembers().clear(); 
+                        
+                         model.getViewList().add("Choose Member");
+                            model.getMembers().values().forEach((member) -> {
+                                model.getTempMembers().add(member);
+                                model.getViewList().add("[" + model.getTempMembers().size() + "]" + member.toString());
                         });
-                        state = CHOOSEMEMBERWORKOUT;
+                        state = SHOWMEMBERWORKOUT;
                         break;
                     case "2":
-                    state = CHOOSEMEMBERNOTE;
-                        model.update(f2);
+                    model.update(loadMembers);
+                        
+                        model.getTempMembers().clear(); 
+                        
+                         model.getViewList().add("Choose Member");
+                            model.getMembers().values().forEach((member) -> {
+                                model.getTempMembers().add(member);
+                                model.getViewList().add("[" + model.getTempMembers().size() + "]" + member.toString());
+                        });
+                        state = SHOWMEMBERNOTE;
                         break;
                     case "3":
-                    state = ADDMEMBERNOTE;
+                        model.update(loadMembers);
+                        
+                        model.getTempMembers().clear(); 
+                        
+                         model.getViewList().add("Choose Member");
+                            model.getMembers().values().forEach((member) -> {
+                                model.getTempMembers().add(member);
+                                model.getViewList().add("[" + model.getTempMembers().size() + "]" + member.toString());
+                        });
+                        state = ADDMEMBERNOTE;
                         break;
                     case "4":
                     state = USERNAME;
@@ -78,21 +103,31 @@ public class PersonalTrainerController implements IController {
                 }
                 break; 
             
-            case CHOOSEMEMBERWORKOUT:
+            case SHOWMEMBERWORKOUT:
+                model.update(loadMembers.andThen(mapBookingsToMembers).andThen(mapWorkoutsToBookings));
                 
                 model.getMembers().values().forEach((member) -> {
-                    member.getBookings().values().stream()
-                            .filter(booking -> booking.isCheckedIn() 
-                                    && booking.getWorkout().getEndDate().before(new Date()))
-                            .map(Booking::getWorkout)
+                    if(member.getId() ==  model.getTempMembers().get(Integer.parseInt(input)-1).getId()){
+                        member.getBookings().values().stream()
+                           .filter(booking -> booking.isCheckedIn() && booking.getWorkout().getEndDate().isBefore(LocalDateTime.now()))                   
                             .forEach((t) -> {
-                                model.getViewList().add(t.toString());
+                                model.getViewList().add(t.getWorkout().BookingsAccessToString());
                             });
-            });
-                
+                    }
+                });              
+                    model.getViewList().add("Write exit to return to menu"); 
+                    state = RETURNTOMENUOPTION;
                 break; 
                 
-            case CHOOSEMEMBERNOTE:
+            case SHOWMEMBERNOTE:
+                model.update(loadMembers.andThen(mapNotesToMembers));
+                
+                model.getMembers().values().forEach((member) -> {
+                    if(member.getId() == model.getTempMembers().get(Integer.parseInt(input)-1).getId()){
+                        member.getNotes().forEach(member);
+                    }
+            });
+
                 model.getMembers().values().forEach((member) -> {
                     member.getNotes().values().stream()
                             .filter(note -> note.getNote().equalsIgnoreCase(member.getName()))
@@ -108,6 +143,14 @@ public class PersonalTrainerController implements IController {
             case ADDMEMBERNOTE:
                 
                 break;
+                
+            case RETURNTOMENUOPTION: 
+                if(input.equalsIgnoreCase("exit")){
+                    AddMenyOptions(); 
+                    state = MENU;  
+                }
+                break;
+                
             default:    
                 state=USERNAME;
                 model.getViewList().add("Username");

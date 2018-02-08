@@ -22,6 +22,8 @@ public class SuperModel {
     private final List<WorkoutRoom> tempWorkoutRooms;
     private final List<WorkoutType> tempWorkoutTypes;
     private final List<String> tempWorkoutInput;
+    private final List<Member> tempMembers; 
+    private final List<Note> tempNotes;
 
     public SuperModel() {
         this.bookings = new HashMap<>();
@@ -31,6 +33,8 @@ public class SuperModel {
         this.tempWorkoutRooms = new ArrayList<>();
         this.tempWorkoutTypes = new ArrayList<>();
         this.tempWorkoutInput = new ArrayList<>();
+        this.tempMembers = new ArrayList<>();
+        this.tempNotes = new ArrayList<>();
 
         this.members = new HashMap<>();
         this.personalTrainers = new HashMap<>();
@@ -132,6 +136,14 @@ public class SuperModel {
     public List<String> getTempWorkoutInput() {
         return tempWorkoutInput;
     }
+    
+    public List<Member> getTempMembers() {
+        return tempMembers;
+    }
+    
+    public List<Note> getTempNotes() {
+        return tempNotes;
+    }
 
     public String getReturnStatement() {
         return returnStatement;
@@ -140,7 +152,7 @@ public class SuperModel {
     public void setReturnStatement(String returnStatement) {
         this.returnStatement = returnStatement;
     }
-
+    
     public void clearUser() {
         getMembers().remove(user.getId());
         user=null;

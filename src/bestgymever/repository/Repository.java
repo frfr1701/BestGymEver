@@ -419,12 +419,12 @@ public class Repository {
         return model;
     }
 
-    public SuperModel addNote(SuperModel model, String note) {
+    public SuperModel addNote(SuperModel model,String inMemberID, String note) {
         query = "call add_Note(?,?,?)";
         try (Connection con = DriverManager.getConnection(pr.getConnectionString());
                 CallableStatement stmt = con.prepareCall(query)) {
 
-            stmt.setString(1, String.valueOf(model.getUser().getId()));
+            stmt.setString(1, inMemberID);
             stmt.setString(2, note);
             stmt.registerOutParameter(3, java.sql.Types.VARCHAR);
             rs = stmt.executeQuery();
