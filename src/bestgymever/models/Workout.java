@@ -1,5 +1,6 @@
 package bestgymever.models;
 
+import java.time.*;
 import java.util.*;
 
 public class Workout implements IModel {
@@ -7,12 +8,12 @@ public class Workout implements IModel {
     private final int id;
     private int availableSlots;
     private final PersonalTrainer personalTrainer;
-    private final Date startDate, endDate;
+    private final LocalDateTime startDate, endDate;
     private final WorkoutRoom workoutRoom;
     private final WorkoutType workoutType;
     private final Map<Integer, Booking> bookings;
 
-    public Workout(int id, PersonalTrainer personalTrainer, int avalibleSlots, Date startDate, Date endDate, WorkoutRoom workoutRoom, WorkoutType workoutType) {
+    public Workout(int id, PersonalTrainer personalTrainer, int avalibleSlots, LocalDateTime startDate, LocalDateTime endDate, WorkoutRoom workoutRoom, WorkoutType workoutType) {
         bookings = new HashMap<>();
         this.id = id;
         this.personalTrainer = personalTrainer;
@@ -35,11 +36,11 @@ public class Workout implements IModel {
         this.availableSlots = availableSlots;
     }
 
-    public Date getStarDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
@@ -69,8 +70,15 @@ public class Workout implements IModel {
     
     @Override
     public String toString(){
-        return String.valueOf("Availableslots: " + availableSlots + "\tpersonalTrainer: " 
-                + personalTrainer + "\tStartdate-Enddate: " + startDate +"-"+endDate + "\tWorkoutroom: " + workoutRoom 
-                + "\tWorkouttype: " + workoutType);
+        return "Availableslots: " + availableSlots + ", type of workout: " + workoutType + ", room: " + workoutRoom + ", pt: " + 
+                personalTrainer + ", date: " + startDate.toString().replace("T", " time: ") + 
+                " - " + endDate.toString().substring(endDate.toString().indexOf("T") + 1);
+        
+    }
+    
+    public String BookingsAccessToString(){
+        return "Type of workout: " + workoutType + ", room: " + workoutRoom + ", pt: " + 
+                personalTrainer + ", date: " + startDate.toString().replace("T", " time: ") + 
+                " - " + endDate.toString().substring(endDate.toString().indexOf("T") + 1);
     }
 }
