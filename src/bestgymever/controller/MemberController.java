@@ -32,7 +32,7 @@ public class MemberController implements IController {
     @Override
     public void updateModel(String input) {
         try {
-            
+
             this.input = input;
             model.getViewList().clear();
             switch (state) {
@@ -60,8 +60,10 @@ public class MemberController implements IController {
                             model.update(getWorkouts);
                             model.getWorkouts().forEach((t, working) -> {
                                 if (working.getStartDate().isAfter(LocalDateTime.now())) {
-                                    model.getTempWorkouts().add(working);
-                                    model.getViewList().add("[" + model.getTempWorkouts().size() + "] " + working);
+                                    if (working.getAvailableSlots() > 0) {
+                                        model.getTempWorkouts().add(working);
+                                        model.getViewList().add("[" + model.getTempWorkouts().size() + "] " + working);
+                                    }
                                 }
                             });
                             model.getViewList().add("Choose workout to book or write exit to get to menu");
@@ -92,7 +94,7 @@ public class MemberController implements IController {
                             break;
                     }
                     break;
-                
+
                 case BOOKING:
                     switch (input) {
                         case "exit":
@@ -128,11 +130,11 @@ public class MemberController implements IController {
                     model.getViewList().add("Username");
                     break;
             }
-            
+
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             model.getViewList().add("you can't select that");
             AddMenyOptions();
-            state=OPTION;
+            state = OPTION;
         }
         updateView();
     }
