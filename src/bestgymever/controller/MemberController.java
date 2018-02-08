@@ -19,7 +19,8 @@ public class MemberController implements IController {
     private final FunInt getMyBookings = (m) -> repository.mapBookingsToMembers(m, String.valueOf(m.getUser().getId()));
     private final FunInt getMyWorkouts = (m) -> repository.mapWorkoutsToBookings(m, "");
     private final FunInt getWorkouts = (m) -> repository.getWorkouts(m, "");
-    private final FunInt RemoveBooking = (m) -> repository.cancelBooking(m, String.valueOf(Integer.parseInt(input) - 1));
+    private final FunInt CreateBooking = (m) -> repository.createBooking(m, String.valueOf(Integer.parseInt(input) - 1));
+    private final FunInt CancelBooking = (m) -> repository.cancelBooking(m, String.valueOf(Integer.parseInt(input) - 1));
 
     public MemberController(SuperModel model, ConsoleView view, Repository repository) {
         this.model = model;
@@ -30,87 +31,110 @@ public class MemberController implements IController {
 
     @Override
     public void updateModel(String input) {
-        this.input = input;
-        model.getViewList().clear();
-        switch (state) {
-            case USERNAME:
-                model.setUsername(input);
-                model.getViewList().add("Password");
-                state = PASSWORD;
-                break;
-            case PASSWORD:
-                model.setPassword(input);
-                model.update(login);
-                if (model.getUser() == null) {
-                    model.getViewList().add("Wrong Username/Password");
-                    state = USERNAME;
-                    model.getViewList().add("Username");
-                } else {
-                    model.getViewList().add("Welcome " + model.getMembers().get(model.getUser().getId()).getName());
-                    AddMenyOptions();
-                    state = OPTION;
-                }
-                break;
-            case OPTION:
-                switch (input) {
-                    case "1":
-                        model.update(getWorkouts);
-                        model.getWorkouts().forEach((t, working) -> {
-                            if (working.getStartDate().isAfter(LocalDateTime.now())) {
-                                model.getTempWorkouts().add(working);
-                                model.getViewList().add("[" + model.getTempWorkouts().size() + "] Type of workout: " + working.getWorkoutType() + ", room: " + working.getWorkoutRoom() + ", pt: " + working.getPersonalTrainer() + ", start time: " + working.getStartDate().toString().replace("T", " ") + ", end time: " + working.getEndDate().toString().replace("T", " "));
-                            }
-                        });
-                        model.getViewList().add("Choose workout to book or write exit to get to menu");
-                        state = BOOKING;
-                        break;
-                    case "2":
-                        model.update(getMyBookings);
-                        model.update(getMyWorkouts);
-                        model.getBookings().forEach((t, booking) -> {
-                            if (booking.getWorkout().getStartDate().isAfter(LocalDateTime.now())) {
-                                model.getTempBookings().add(booking);
-                                model.getViewList().add("[" + model.getTempBookings().size() + "] Type of workout: " + booking.getWorkout().getWorkoutType() + ", room: " + booking.getWorkout().getWorkoutRoom() + ", pt: " + booking.getWorkout().getPersonalTrainer() + ", start time: " + booking.getWorkout().getStartDate().toString().replace("T", " ") + ", end time: " + booking.getWorkout().getEndDate().toString().replace("T", " "));
-                            }
-                        });
-                        if (model.getTempBookings().size() == 0) {
-                            model.getViewList().add("You have no bookings");
-                            AddMenyOptions();
-                            state = OPTION;
-                        } else {
-                            model.getViewList().add("Choose workout to cancel or exit to menu");
-                            state = BOOKINGS;
-                        }
-                        break;
-                    case "3":
+        try {
+
+            this.input = input;
+            model.getViewList().clear();
+            switch (state) {
+                case USERNAME:
+                    model.setUsername(input);
+                    model.getViewList().add("Password");
+                    state = PASSWORD;
+                    break;
+                case PASSWORD:
+                    model.setPassword(input);
+                    model.update(login);
+                    if (model.getUser() == null) {
+                        model.getViewList().add("Wrong Username/Password");
                         state = USERNAME;
                         model.getViewList().add("Username");
-                        break;
-                }
-                break;
-
-            case BOOKING:
-
-                break;
-            case BOOKINGS:
-                switch (input) {
-                    case "exit":
+                    } else {
+                        model.getViewList().add("Welcome " + model.getMembers().get(model.getUser().getId()).getName());
                         AddMenyOptions();
                         state = OPTION;
-                        break;
-                    default:
-                        model.update(RemoveBooking);
-                        model.getViewList().add("");
-                        AddMenyOptions();
-                        state = OPTION;
-                        break;
-                }
-                model.getTempBookings().clear();
-                break;
-            default:
-                state = USERNAME;
-                model.getViewList().add("Username");
-                break;
+                    }
+                    break;
+                case OPTION:
+                    switch (input) {
+                        case "1":
+                            model.update(getWorkouts);
+                            model.getWorkouts().forEach((t, working) -> {
+                                if (working.getStartDate().isAfter(LocalDateTime.now())) {
+                                    if (working.getAvailableSlots() > 0) {
+                                        model.getTempWorkouts().add(working);
+                                        model.getViewList().add("[" + model.getTempWorkouts().size() + "] " + working);
+                                    }
+                                }
+                            });
+                            model.getViewList().add("Choose workout to book or write exit to get to menu");
+                            state = BOOKING;
+                            break;
+                        case "2":
+                            model.update(getMyBookings);
+                            model.update(getMyWorkouts);
+                            model.getBookings().forEach((t, booking) -> {
+                                if (booking.getWorkout().getStartDate().isAfter(LocalDateTime.now())) {
+                                    model.getTempBookings().add(booking);
+                                    model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().BookingsAccessToString());
+                                }
+                            });
+                            if (model.getTempBookings().size() == 0) {
+                                model.getViewList().add("You have no bookings");
+                                AddMenyOptions();
+                                state = OPTION;
+                            } else {
+                                model.getViewList().add("Choose workout to cancel or write exit to get to menu");
+                                state = BOOKINGS;
+                            }
+                            break;
+                        case "3":
+                            state = USERNAME;
+                            model.clearUser();
+                            model.getViewList().add("Username");
+                            break;
+                    }
+                    break;
+
+                case BOOKING:
+                    switch (input) {
+                        case "exit":
+                            AddMenyOptions();
+                            state = OPTION;
+                            break;
+                        default:
+                            model.update(CreateBooking);
+                            model.getViewList().add(model.getReturnStatement());
+                            AddMenyOptions();
+                            state = OPTION;
+                            break;
+                    }
+                    model.getTempWorkouts().clear();
+                    break;
+                case BOOKINGS:
+                    switch (input) {
+                        case "exit":
+                            AddMenyOptions();
+                            state = OPTION;
+                            break;
+                        default:
+                            model.update(CancelBooking);
+                            model.getViewList().add(model.getReturnStatement());
+                            AddMenyOptions();
+                            state = OPTION;
+                            break;
+                    }
+                    model.getTempBookings().clear();
+                    break;
+                default:
+                    state = USERNAME;
+                    model.getViewList().add("Username");
+                    break;
+            }
+
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            model.getViewList().add("you can't select that");
+            AddMenyOptions();
+            state = OPTION;
         }
         updateView();
     }

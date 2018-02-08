@@ -70,8 +70,15 @@ public class Workout implements IModel {
     
     @Override
     public String toString(){
-        return String.valueOf("Availableslots: " + availableSlots + "\tpersonalTrainer: " 
-                + personalTrainer + "\tStartdate-Enddate: " + startDate +"-"+endDate + "\tWorkoutroom: " + workoutRoom 
-                + "\tWorkouttype: " + workoutType);
+        return "Availableslots: " + availableSlots + ", type of workout: " + workoutType + ", room: " + workoutRoom + ", pt: " + 
+                personalTrainer + ", date: " + startDate.toString().replace("T", " time: ") + 
+                " - " + endDate.toString().substring(endDate.toString().indexOf("T") + 1);
+        
+    }
+    
+    public String BookingsAccessToString(){
+        return "Type of workout: " + workoutType + ", room: " + workoutRoom + ", pt: " + 
+                personalTrainer + ", date: " + startDate.toString().replace("T", " time: ") + 
+                " - " + endDate.toString().substring(endDate.toString().indexOf("T") + 1);
     }
 }
