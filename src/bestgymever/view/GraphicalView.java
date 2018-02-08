@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
-public class GraphicalView extends JFrame implements Runnable {
+public class GraphicalView extends JFrame implements Runnable, IView {
 
     JLabel title;
     JPanel topPadding;
@@ -74,6 +74,7 @@ public class GraphicalView extends JFrame implements Runnable {
         setLocationRelativeTo(null);
     }
 
+    @Override
     public String display(List<String> viewList) {
         done = false;
         this.viewList = viewList;

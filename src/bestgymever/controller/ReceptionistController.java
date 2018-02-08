@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class ReceptionistController {
 
     SuperModel model;
-    GraphicalView view;
+    IView view;
     Repository repository;
     ReceptionistState state;
 
@@ -19,7 +19,7 @@ public class ReceptionistController {
     FunInt login = (m) -> repository.ReceptionistlogIn(m, model.getUsername(), model.getPassword());
     FunInt checkIn = (m) -> repository.checkInMember(m, model.getBookingID());
 
-    public ReceptionistController(SuperModel model, GraphicalView view, Repository repository) {
+    public ReceptionistController(SuperModel model, IView view, Repository repository) {
 
         this.state = START;
         this.model = model;
@@ -36,9 +36,7 @@ public class ReceptionistController {
                     state = PASSWORD;
                     model.getViewList().add("Write password:");
                     break;
-
                 case PASSWORD:
-
                     model.setPassword(input);
                     model.update(login);
                     if (model.getUser() == null) {
@@ -67,12 +65,10 @@ public class ReceptionistController {
                         }
                     }
                     break;
-
                 case CHOOSEMEMBER:
                     if (model.getTempMembers().isEmpty()) {
                         model.getViewList().add("FUCK U");
                         state = MENU;
-
                     } else {
                         model.getViewList().add("Which workout do you want to check in?");
                         model.getMembers().values().forEach((member) -> {
@@ -84,7 +80,6 @@ public class ReceptionistController {
                                             model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().toString());
                                         });
                             }
-
                         });
                         state = MEMBERCHECKEDIN;
                     }
