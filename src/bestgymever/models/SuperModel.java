@@ -2,12 +2,11 @@ package bestgymever.models;
 
 import bestgymever.controller.*;
 import java.util.*;
-import javax.swing.text.html.parser.*;
 
 public class SuperModel {
 
     private IPerson user;
-    private String username, password, returnStatement, name;
+    private String username, password, returnStatement, name, bookingID;
     private int tempMemberID;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
@@ -101,6 +100,15 @@ public class SuperModel {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
+    }
+    
 
     public IPerson getUser() {
         return user;
