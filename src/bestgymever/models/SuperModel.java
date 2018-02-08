@@ -8,6 +8,7 @@ public class SuperModel {
 
     private IPerson user;
     private String username, password, returnStatement, name;
+    private int tempMemberID;
     private final List<String> viewList;
     private final Map<Integer, Member> members;
     private final Map<Integer, PersonalTrainer> personalTrainers;
@@ -152,6 +153,15 @@ public class SuperModel {
     public void setReturnStatement(String returnStatement) {
         this.returnStatement = returnStatement;
     }
+
+    public int getTempMemberID() {
+        return tempMemberID;
+    }
+
+    public void setTempMemberID(int tempMemberID) {
+        this.tempMemberID = tempMemberID;
+    }
+    
     
     public void clearUser() {
         getMembers().remove(user.getId());
