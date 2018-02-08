@@ -14,7 +14,7 @@ public class ReceptionistController {
 
     FunInt getmembers = (m) -> repository.getMembers(m, "");
     FunInt getbookingsformembers = (m) -> repository.mapBookingsToMembers(m, "");
-    // FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
+     FunInt getworkoutsforbookings = (m) -> repository.mapWorkoutsToBookings(m, "");
     FunInt login = (m) -> repository.ReceptionistlogIn(m, model.getUsername(), model.getPassword());
 
     public ReceptionistController(SuperModel model, ConsoleView view, Repository repository) {
@@ -42,25 +42,39 @@ public class ReceptionistController {
                 if (model.getUser() == null) {
                     state = START;
                 } else {
-                    model.update(getmembers.andThen(getbookingsformembers));
+                    state = CHOOSEMEMBER;
+                    model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
                     model.getMembers().values().forEach((member) -> {
-                        System.out.println("hello");
-                        member.getBookings().values()
+                        member.getBookings().values().stream()
+                                .filter((booking) -> !booking.isCheckedIn())
                                 .forEach((booking) -> {
-                                    if (!booking.isCheckedIn()) {
-                                        System.out.println(booking.getWorkout());
-                                        model.getViewList().add(booking.getWorkout().toString());
-                                    }
-                                });
+                                    model.getTempBookings().add(booking);
+                                    model.getViewList().add("["+model.getTempBookings().size()+"] " + booking.getWorkout().toString());
+                                    model.getViewList().add("Which workout would you like to add to? ");
+                        });
                     });
                     state = CHOOSEMEMBER;
                 }
                 break;
 
             case CHOOSEMEMBER:
-                model.getViewList().add("Which workout would you like to add to? ");
+                model.getViewList().add("test ");
+                
+                 model.update(getmembers.andThen(getbookingsformembers));
+                    model.getMembers().values().forEach((member) -> {
+                        member.getBookings().values().stream()
+                                .forEach((booking) -> {
+                                    model.getTempBookings().add(booking);
+                                    model.getViewList().add("["+model.getTempBookings().size()+"] " + booking.getWorkout().toString());
+                                    model.getViewList().add("Which workout would you like to add to? ");
+                        });
+                    });
+                
+                
+                
+                
                 break;
-            //
+      
 
             default:
                 model.getViewList().add("Write username: ");
