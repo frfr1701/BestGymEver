@@ -51,10 +51,10 @@ public class MemberController implements IController {
                     } else {
                         model.getViewList().add("Welcome " + model.getMembers().get(model.getUser().getId()).getName());
                         AddMenyOptions();
-                        state = OPTION;
+                        state = MENUOPTIONS;
                     }
                     break;
-                case OPTION:
+                case MENUOPTIONS:
                     switch (input) {
                         /*--------------Book a Workout -----------------*/
                         case "1":
@@ -83,7 +83,7 @@ public class MemberController implements IController {
                             if (model.getTempBookings().size() == 0) {
                                 model.getViewList().add("You have no bookings");
                                 AddMenyOptions();
-                                state = OPTION;
+                                state = MENUOPTIONS;
                             } else {
                                 model.getViewList().add("Choose workout to cancel or write exit to get to menu");
                                 state = BOOKINGS;
@@ -102,13 +102,13 @@ public class MemberController implements IController {
                     switch (input) {
                         case "exit":
                             AddMenyOptions();
-                            state = OPTION;
+                            state = MENUOPTIONS;
                             break;
                         default:
                             model.update(CreateBooking);
                             model.getViewList().add(model.getReturnStatement());
                             AddMenyOptions();
-                            state = OPTION;
+                            state = MENUOPTIONS;
                             break;
                     }
                     model.getTempWorkouts().clear();
@@ -118,13 +118,13 @@ public class MemberController implements IController {
                     switch (input) {
                         case "exit":
                             AddMenyOptions();
-                            state = OPTION;
+                            state = MENUOPTIONS;
                             break;
                         default:
                             model.update(CancelBooking);
                             model.getViewList().add(model.getReturnStatement());
                             AddMenyOptions();
-                            state = OPTION;
+                            state = MENUOPTIONS;
                             break;
                     }
                     model.getTempBookings().clear();
@@ -138,7 +138,7 @@ public class MemberController implements IController {
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             model.getViewList().add("you can't select that");
             AddMenyOptions();
-            state = OPTION;
+            state = MENUOPTIONS;
         }
         updateView();
     }
