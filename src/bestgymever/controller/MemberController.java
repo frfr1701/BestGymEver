@@ -80,7 +80,7 @@ public class MemberController implements IController {
                                     model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().BookingsAccessToString());
                                 }
                             });
-                            if (model.getTempBookings().size() == 0) {
+                            if (model.getTempBookings().isEmpty()) {
                                 model.getViewList().add("You have no bookings");
                                 AddMenyOptions();
                                 state = MENUOPTIONS;
