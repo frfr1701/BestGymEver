@@ -19,8 +19,8 @@ public class MemberController implements IController {
     private final FunInt getMyBookings = (m) -> repository.mapBookingsToMembers(m, String.valueOf(m.getUser().getId()));
     private final FunInt getMyWorkouts = (m) -> repository.mapWorkoutsToBookings(m, "");
     private final FunInt getWorkouts = (m) -> repository.getWorkouts(m, "");
-    private final FunInt CreateBooking = (m) -> repository.createBooking(m, String.valueOf(m.getUser().getId()), String.valueOf(m.getTempWorkouts().get(Integer.parseInt(input)-1).getId()));
-    private final FunInt CancelBooking = (m) -> repository.cancelBooking(m, String.valueOf(m.getUser().getId()), String.valueOf(m.getTempBookings().get(Integer.parseInt(input)-1).getId()));
+    private final FunInt CreateBooking = (m) -> repository.createBooking(m, String.valueOf(m.getUser().getId()), String.valueOf(m.getTempWorkouts().get(Integer.parseInt(input) - 1).getId()));
+    private final FunInt CancelBooking = (m) -> repository.cancelBooking(m, String.valueOf(m.getUser().getId()), String.valueOf(m.getTempBookings().get(Integer.parseInt(input) - 1).getId()));
 
     public MemberController(SuperModel model, ConsoleView view, Repository repository) {
         this.model = model;
@@ -32,7 +32,7 @@ public class MemberController implements IController {
     @Override
     public void updateModel(String input) {
         try {
-            
+
             this.input = input;
             model.getViewList().clear();
             switch (state) {
@@ -56,14 +56,14 @@ public class MemberController implements IController {
                     break;
                 case OPTION:
                     switch (input) {
-                       /*--------------Book a Workout -----------------*/
+                        /*--------------Book a Workout -----------------*/
                         case "1":
                             model.update(getWorkouts);
                             model.getWorkouts().forEach((t, working) -> {
                                 if (working.getStartDate().isAfter(LocalDateTime.now())) {
-                                    if(working.getAvailableSlots()>0){
-                                    model.getTempWorkouts().add(working);
-                                    model.getViewList().add("[" + model.getTempWorkouts().size() + "] " + working);
+                                    if (working.getAvailableSlots() > 0) {
+                                        model.getTempWorkouts().add(working);
+                                        model.getViewList().add("[" + model.getTempWorkouts().size() + "] " + working);
                                     }
                                 }
                             });
@@ -134,11 +134,11 @@ public class MemberController implements IController {
                     model.getViewList().add("Username");
                     break;
             }
-            
+
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             model.getViewList().add("you can't select that");
             AddMenyOptions();
-            state=OPTION;
+            state = OPTION;
         }
         updateView();
     }
