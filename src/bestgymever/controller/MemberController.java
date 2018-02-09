@@ -56,6 +56,7 @@ public class MemberController implements IController {
                     break;
                 case OPTION:
                     switch (input) {
+                       /*--------------Book a Workout -----------------*/
                         case "1":
                             model.update(getWorkouts);
                             model.getWorkouts().forEach((t, working) -> {
@@ -69,6 +70,7 @@ public class MemberController implements IController {
                             model.getViewList().add("Choose workout to book or write exit to get to menu");
                             state = BOOKING;
                             break;
+                        /*--------------Get To Booked Workouts and get option to cancel or exit to menu -----------------*/
                         case "2":
                             model.update(getMyBookings);
                             model.update(getMyWorkouts);
@@ -87,6 +89,7 @@ public class MemberController implements IController {
                                 state = BOOKINGS;
                             }
                             break;
+                        /*--------------Logging out -----------------*/
                         case "3":
                             state = USERNAME;
                             model.clearUser();
@@ -94,7 +97,7 @@ public class MemberController implements IController {
                             break;
                     }
                     break;
-                
+                /*--------------Creating booking or exit to menu -----------------*/
                 case BOOKING:
                     switch (input) {
                         case "exit":
@@ -110,6 +113,7 @@ public class MemberController implements IController {
                     }
                     model.getTempWorkouts().clear();
                     break;
+                /*--------------Canceling one of the bookings or exit to the menu -----------------*/
                 case BOOKINGS:
                     switch (input) {
                         case "exit":
