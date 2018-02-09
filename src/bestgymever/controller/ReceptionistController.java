@@ -4,6 +4,7 @@ import bestgymever.models.SuperModel;
 import static bestgymever.controller.ReceptionistState.*;
 import bestgymever.repository.Repository;
 import bestgymever.view.*;
+import java.time.*;
 import java.util.stream.Collectors;
 
 public class ReceptionistController {
@@ -46,11 +47,13 @@ public class ReceptionistController {
                         model.update(getmembers.andThen(getbookingsformembers).andThen(getworkoutsforbookings));
                         model.getTempMembers().clear();
                         model.getTempBookings().clear();
-                        if (!model.getBookings().values().stream().filter((booking) -> !booking.isCheckedIn()).collect(Collectors.toList()).isEmpty()) {
+                        if (!model.getBookings().values().stream().filter((booking) -> (!booking.isCheckedIn()) && (booking.getWorkout().getStartDate().getDayOfYear()==LocalDateTime.now().getDayOfYear()) &&
+                                (booking.getWorkout().getStartDate().getYear()==LocalDateTime.now().getYear())).collect(Collectors.toList()).isEmpty()) {
                             model.getViewList().add("Which member would you like to checkin?");
                             model.getMembers().values().forEach((member) -> {
                                 member.getBookings().values().stream()
-                                        .filter((booking) -> !booking.isCheckedIn()).forEach((booking) -> {
+                                        .filter((booking) -> (!booking.isCheckedIn()) && (booking.getWorkout().getStartDate().getDayOfYear()==LocalDateTime.now().getDayOfYear()) &&
+                                (booking.getWorkout().getStartDate().getYear()==LocalDateTime.now().getYear())).forEach((booking) -> {
                                     if (!model.getTempMembers().contains(member)) {
                                         model.getTempMembers().add(member);
                                         model.getViewList().add("[" + model.getTempMembers().size() + "] " + member.toString());
@@ -77,7 +80,7 @@ public class ReceptionistController {
                                         .filter(booking -> !booking.isCheckedIn())
                                         .forEach((booking) -> {
                                             model.getTempBookings().add(booking);
-                                            model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().toString());
+                                            model.getViewList().add("[" + model.getTempBookings().size() + "] " + booking.getWorkout().BookingsAccessToString());
                                         });
                             }
                         });
